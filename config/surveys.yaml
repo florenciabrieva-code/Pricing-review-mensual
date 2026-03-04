@@ -1,46 +1,37 @@
-# Configuracion de surveys de Qualtrics
-# Ejecutar scripts/discover_surveys.py para auto-completar los IDs y QIDs
+# Configuracion de surveys de UX (datos exportados de Qualtrics a Google Sheets)
+
+sheets:
+  spreadsheet_id: "1BWaML4knSlNTYLDpkmPQSZZEZ_j-MoIi6HwB813EGwc"
 
 qualtrics:
   surveys:
 
     simulador_costos_lite:
       name: "[MLB] VOC Simulador de Costos LITE"
-      id: null                    # Completar despues de correr discover_surveys.py
-      ces_question_id: null       # QID de la pregunta de facilidad/dificultad (Q1)
-      doubts_question_id: null    # QID de la pregunta de texto abierto con dudas
-      ces_scale:
-        easy: [4, 5]              # Ajustar si la escala es 1-7 (easy: [6, 7])
-        neutral: [3]
-        difficult: [1, 2]
+      sheets_tab: "Datos simulador lite"
+      ces_column: "Q1"              # CES: facilidad de uso de la herramienta
+      doubts_column: "Q3"           # Texto abierto: experiencia con el simulador
+      doubts_type: "text"
 
     simulador_costos:
       name: "[MLB] VOC Simulador de Costos"
-      id: null
-      ces_question_id: null
-      doubts_question_id: null
-      ces_scale:
-        easy: [4, 5]
-        neutral: [3]
-        difficult: [1, 2]
+      sheets_tab: "Datos simulador de costos"
+      ces_column: "Q1"
+      doubts_column: "Q3"           # Texto abierto: experiencia con el simulador
+      doubts_type: "text"
 
     costos:
       name: "[MLB] VOC Costos"
-      id: null
-      ces_question_id: null
-      doubts_question_id: null
-      ces_scale:
-        easy: [4, 5]
-        neutral: [3]
-        difficult: [1, 2]
+      sheets_tab: "Datos costos"
+      ces_column: "Q1"
+      doubts_column: "Q2"           # Multi-choice: principales dudas sobre Custos
+      doubts_other_column: "Q2_6_TEXT"  # Campo abierto para la opcion "Otro"
+      doubts_type: "multichoice"
 
     pricing:
       name: "[MLB] VOC Pricing"
-      id: null
-      ces_question_id: null
-      doubts_question_id: null
-      awareness_question_id: null  # QID exclusivo de pricing: conocimiento previo de la seccion
-      ces_scale:
-        easy: [4, 5]
-        neutral: [3]
-        difficult: [1, 2]
+      sheets_tab: "Datos pricing models"
+      ces_column: "Q1"
+      awareness_column: "Q2"        # Conocia las taxas especiales antes de ingresar?
+      doubts_column: "Q3"           # Texto abierto: principales dudas sobre taxas
+      doubts_type: "text"

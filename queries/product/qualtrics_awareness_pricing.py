@@ -1,10 +1,9 @@
 """
-Awareness de Pricing antes de ingresar a la seccion (Qualtrics)
+Awareness de Pricing antes de ingresar a la seccion
 
-Solo aplica al survey [MLB] VOC Pricing.
-Pregunta especifica que mide si el usuario conocia la seccion antes de ingresar.
+Lee Q2 del survey de Pricing desde Google Sheets.
+Pregunta: "Voce sabia que tinha disponivel para voce as taxas especiais do Mercado Pago?"
 """
-import os
 import sys
 from pathlib import Path
 
@@ -15,53 +14,37 @@ SECTION = "product"
 DESCRIPTION = "Porcentaje de usuarios que conocian la seccion de Pricing antes de ingresar"
 ORDER = 4
 
-DRY_RUN_DATA = pd.DataFrame(
-    {
-        "Respuesta": ["Si, la conocia", "No, es la primera vez", "La vi pero nunca la use"],
-        "Respuestas": [142, 109, 61],
-        "% del total": [45.5, 34.9, 19.6],
-    }
-)
+DRY_RUN_DATA = pd.DataFrame({
+    "Respuesta":   ["Sim, sabia", "Nao sabia", "Ja vi mas nao usei"],
+    "Respuestas":  [142, 109, 61],
+    "% del total": [45.5, 34.9, 19.6],
+})
 
 
 def run(params: dict, config: dict, dry_run: bool = False) -> pd.DataFrame:
     if dry_run:
         return DRY_RUN_DATA
 
-    api_token = config.get("QUALTRICS_API_TOKEN") or os.getenv("QUALTRICS_API_TOKEN")
-    datacenter = config.get("QUALTRICS_DATACENTER") or os.getenv("QUALTRICS_DATACENTER")
-
-    if not api_token or not datacenter:
-        return pd.DataFrame({"Aviso": ["Configurar QUALTRICS_API_TOKEN y QUALTRICS_DATACENTER en .env"]})
-
     sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
-    from sources.qualtrics_client import QualtricsClient
+    from sources.sheets_reader import SheetsReader
 
-    surveys_config = config.get("qualtrics", {}).get("surveys", {})
-    pricing_cfg = surveys_config.get("pricing", {})
-    survey_id = pricing_cfg.get("id")
-    awareness_qid = pricing_cfg.get("awareness_question_id")
+    surveys_cfg = config.get("qualtrics", {}).get("surveys", {})
+    pricing_cfg = surveys_cfg.get("pricing", {})
+    tab = pricing_cfg.get("sheets_tab")
+    awareness_col = pricing_cfg.get("awareness_column", "Q2")
 
-    if not survey_id or not awareness_qid:
-        return pd.DataFrame(
-            {"Aviso": ["Configurar pricing.awareness_question_id en config/surveys.yaml"]}
-        )
+    if not tab:
+        return pd.DataFrame({"Aviso": ["sheets_tab de pricing no configurado en config/surveys.yaml"]})
 
-    client = QualtricsClient(api_token, datacenter)
-
+    reader = SheetsReader()
     try:
-        df = client.export_responses(
-            survey_id,
-            params["start_date"],
-            params["end_date"],
-            use_labels=True,  # Traer texto de las opciones
-        )
+        df = reader.get_survey_data(tab, params["start_date"], params["end_date"])
 
-        if awareness_qid not in df.columns or df.empty:
+        if df.empty or awareness_col not in df.columns:
             return pd.DataFrame({"Aviso": ["Sin respuestas en el periodo"]})
 
         counts = (
-            df[awareness_qid]
+            df[awareness_col]
             .dropna()
             .astype(str)
             .str.strip()

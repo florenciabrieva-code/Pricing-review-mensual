@@ -66,11 +66,16 @@ def main():
     # Leer todas las pestanas
     all_data = {}
     for sheet_name in sheets:
-        rows = read_sheet(SHEET_ID, f"'{sheet_name}'!A:Z")
+        # Solo leer pestanas de datos crudos (no resultados)
+        if not sheet_name.lower().startswith("datos"):
+            continue
+        rows = read_sheet(SHEET_ID, f"'{sheet_name}'!A1:R5")  # solo primeras 5 filas
         all_data[sheet_name] = rows
-        print(f"\n=== {sheet_name} ===")
+        safe_name = sheet_name.encode("ascii", "replace").decode()
+        print(f"\n=== {safe_name} ===")
         for row in rows:
-            print("  ", row)
+            safe_row = [str(c).encode("ascii", "replace").decode() for c in row]
+            print("  ", safe_row)
 
     print("\n" + "="*60)
     print("Contenido completo del sheet leido.")

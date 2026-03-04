@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Monthly Review — Marzo 2026</title>
+  <title>Monthly Review — Febrero 2026</title>
   <style>
     /* Reset & base */
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -168,7 +168,7 @@
     <p>Negocio · Producto · CX</p>
   </div>
   <div class="header-period">
-    <div class="period-month">Marzo</div>
+    <div class="period-month">Febrero</div>
     <div class="period-year">2026</div>
   </div>
 </header>
@@ -201,8 +201,8 @@
       <div class="query-card-header">
         <div class="query-title">
           Revenue MoM
+          <span class="badge badge-error">Error</span>
           
-          <span class="badge badge-dry-run">Dry run</span>
         </div>
         
         <div class="query-description">Comparativo de revenue entre el mes actual y el anterior</div>
@@ -210,7 +210,11 @@
         <div class="query-file">queries\business\revenue_mom.sql</div>
       </div>
       <div class="table-wrapper">
-        <p class="dry-run">Modo dry-run: query no ejecutada.</p>
+        <p class="error">Error: 403 Access Denied: Table meli-bi-data:dataset.transactions: User does not have permission to query table meli-bi-data:dataset.transactions, or perhaps it does not exist.; reason: accessDenied, message: Access Denied: Table meli-bi-data:dataset.transactions: User does not have permission to query table meli-bi-data:dataset.transactions, or perhaps it does not exist.
+
+Location: US
+Job ID: 4c683fa6-0646-4d31-94d9-9496f053546d
+</p>
       </div>
     </div>
     
@@ -218,8 +222,8 @@
       <div class="query-card-header">
         <div class="query-title">
           Top 10 Categorías por Volumen
+          <span class="badge badge-error">Error</span>
           
-          <span class="badge badge-dry-run">Dry run</span>
         </div>
         
         <div class="query-description">Categorías con mayor volumen de transacciones en el mes</div>
@@ -227,7 +231,11 @@
         <div class="query-file">queries\business\top_categorias.sql</div>
       </div>
       <div class="table-wrapper">
-        <p class="dry-run">Modo dry-run: query no ejecutada.</p>
+        <p class="error">Error: 403 Access Denied: Table meli-bi-data:dataset.transactions: User does not have permission to query table meli-bi-data:dataset.transactions, or perhaps it does not exist.; reason: accessDenied, message: Access Denied: Table meli-bi-data:dataset.transactions: User does not have permission to query table meli-bi-data:dataset.transactions, or perhaps it does not exist.
+
+Location: US
+Job ID: 6a2b54da-d51a-4961-8e16-e8f007a169bd
+</p>
       </div>
     </div>
     
@@ -247,7 +255,7 @@
         <div class="query-title">
           CES - Facilidad de uso por seccion
           
-          <span class="badge badge-dry-run">Dry run</span>
+          
         </div>
         
         <div class="query-description">Que tan facil/dificil encuentran la herramienta los usuarios que respondieron en el mes</div>
@@ -263,36 +271,41 @@
       <th>Neutro %</th>
       <th>Dificil %</th>
       <th>Respuestas</th>
+      <th>Nota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>Simulador Costos LITE</td>
-      <td>65.20</td>
-      <td>20.10</td>
-      <td>14.70</td>
-      <td>234</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>0</td>
+      <td>Sin respuestas en el periodo</td>
     </tr>
     <tr>
       <td>Simulador Costos</td>
-      <td>71.80</td>
-      <td>18.50</td>
-      <td>9.70</td>
-      <td>189</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>0</td>
+      <td>Sin respuestas en el periodo</td>
     </tr>
     <tr>
       <td>Costos</td>
-      <td>58.30</td>
-      <td>22.70</td>
-      <td>19.00</td>
-      <td>156</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>0</td>
+      <td>Sin respuestas en el periodo</td>
     </tr>
     <tr>
       <td>Pricing</td>
-      <td>69.40</td>
-      <td>19.20</td>
-      <td>11.40</td>
-      <td>312</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>0</td>
+      <td>Sin respuestas en el periodo</td>
     </tr>
   </tbody>
 </table>
@@ -304,7 +317,7 @@
         <div class="query-title">
           Tiempo de respuesta - Encuestas UX
           
-          <span class="badge badge-dry-run">Dry run</span>
+          
         </div>
         
         <div class="query-description">Tiempo promedio y mediana para completar cada encuesta en el mes</div>
@@ -321,40 +334,45 @@
       <th>Min (min)</th>
       <th>Max (min)</th>
       <th>Respuestas</th>
+      <th>Nota</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>Simulador Costos LITE</td>
-      <td>3.20</td>
-      <td>2.80</td>
-      <td>0.50</td>
-      <td>18.30</td>
-      <td>234</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>0</td>
+      <td>Sin datos de duracion</td>
     </tr>
     <tr>
       <td>Simulador Costos</td>
-      <td>4.10</td>
-      <td>3.50</td>
-      <td>0.80</td>
-      <td>22.10</td>
-      <td>189</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>0</td>
+      <td>Sin datos de duracion</td>
     </tr>
     <tr>
       <td>Costos</td>
-      <td>3.80</td>
-      <td>3.20</td>
-      <td>0.60</td>
-      <td>19.70</td>
-      <td>156</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>0</td>
+      <td>Sin datos de duracion</td>
     </tr>
     <tr>
       <td>Pricing</td>
-      <td>5.20</td>
-      <td>4.70</td>
-      <td>1.00</td>
-      <td>28.40</td>
-      <td>312</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>0</td>
+      <td>Sin datos de duracion</td>
     </tr>
   </tbody>
 </table>
@@ -366,7 +384,7 @@
         <div class="query-title">
           Principales dudas por seccion
           
-          <span class="badge badge-dry-run">Dry run</span>
+          
         </div>
         
         <div class="query-description">Categorias de dudas identificadas en las encuestas, ordenadas por representatividad</div>
@@ -386,51 +404,27 @@
   <tbody>
     <tr>
       <td>Simulador Costos LITE</td>
-      <td>Dudas sobre comisiones por venta</td>
-      <td>45</td>
-      <td>19.20</td>
+      <td>Sin respuestas en el periodo</td>
+      <td>0</td>
+      <td>None</td>
     </tr>
     <tr>
-      <td>Simulador Costos LITE</td>
-      <td>Como se calcula el costo de envio</td>
-      <td>38</td>
-      <td>16.20</td>
-    </tr>
-    <tr>
-      <td>Simulador Costos LITE</td>
-      <td>Diferencia entre planes de suscripcion</td>
-      <td>22</td>
-      <td>9.40</td>
+      <td>Simulador Costos</td>
+      <td>Sin respuestas en el periodo</td>
+      <td>0</td>
+      <td>None</td>
     </tr>
     <tr>
       <td>Costos</td>
-      <td>Cuando se acredita el dinero</td>
-      <td>31</td>
-      <td>19.90</td>
-    </tr>
-    <tr>
-      <td>Costos</td>
-      <td>Costos de retiro/transferencia</td>
-      <td>27</td>
-      <td>17.30</td>
-    </tr>
-    <tr>
-      <td>Costos</td>
-      <td>Impuestos y retenciones</td>
-      <td>19</td>
-      <td>12.20</td>
+      <td>Sin respuestas en el periodo</td>
+      <td>0</td>
+      <td>None</td>
     </tr>
     <tr>
       <td>Pricing</td>
-      <td>Desconocia la seccion de pricing</td>
-      <td>58</td>
-      <td>18.60</td>
-    </tr>
-    <tr>
-      <td>Pricing</td>
-      <td>Como se actualiza el precio sugerido</td>
-      <td>34</td>
-      <td>10.90</td>
+      <td>Sin respuestas en el periodo</td>
+      <td>0</td>
+      <td>None</td>
     </tr>
   </tbody>
 </table>
@@ -442,7 +436,7 @@
         <div class="query-title">
           Awareness - Conocimiento previo de Pricing
           
-          <span class="badge badge-dry-run">Dry run</span>
+          
         </div>
         
         <div class="query-description">Porcentaje de usuarios que conocian la seccion de Pricing antes de ingresar</div>
@@ -453,26 +447,12 @@
         <table class="dataframe data-table">
   <thead>
     <tr style="text-align: right;">
-      <th>Respuesta</th>
-      <th>Respuestas</th>
-      <th>% del total</th>
+      <th>Aviso</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Sim, sabia</td>
-      <td>142</td>
-      <td>45.50</td>
-    </tr>
-    <tr>
-      <td>Nao sabia</td>
-      <td>109</td>
-      <td>34.90</td>
-    </tr>
-    <tr>
-      <td>Ja vi mas nao usei</td>
-      <td>61</td>
-      <td>19.60</td>
+      <td>Sin respuestas en el periodo</td>
     </tr>
   </tbody>
 </table>
@@ -484,7 +464,7 @@
         <div class="query-title">
           Journey de Comunicaciones
           
-          <span class="badge badge-dry-run">Dry run</span>
+          
         </div>
         
         <div class="query-description">Metricas del journey de comunicaciones del mes (completar con tablas reales)</div>
@@ -492,7 +472,20 @@
         <div class="query-file">queries\product\comunicaciones_journey.sql</div>
       </div>
       <div class="table-wrapper">
-        <p class="dry-run">Modo dry-run: query no ejecutada.</p>
+        <table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>estado</th>
+      <th>accion</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PENDIENTE</td>
+      <td>Compartir nombres de tablas de comunicaciones en BQ</td>
+    </tr>
+  </tbody>
+</table>
       </div>
     </div>
     
@@ -501,7 +494,7 @@
         <div class="query-title">
           Comportamiento en las Secciones
           
-          <span class="badge badge-dry-run">Dry run</span>
+          
         </div>
         
         <div class="query-description">Comportamiento de usuarios en las secciones del producto (completar con tablas reales)</div>
@@ -509,7 +502,20 @@
         <div class="query-file">queries\product\comportamiento_secciones.sql</div>
       </div>
       <div class="table-wrapper">
-        <p class="dry-run">Modo dry-run: query no ejecutada.</p>
+        <table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>estado</th>
+      <th>accion</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PENDIENTE</td>
+      <td>Compartir nombres de tablas de eventos/comportamiento en BQ</td>
+    </tr>
+  </tbody>
+</table>
       </div>
     </div>
     
@@ -528,8 +534,8 @@
       <div class="query-card-header">
         <div class="query-title">
           Tickets por Motivo
+          <span class="badge badge-error">Error</span>
           
-          <span class="badge badge-dry-run">Dry run</span>
         </div>
         
         <div class="query-description">Distribución de tickets de soporte por motivo en el mes</div>
@@ -537,7 +543,11 @@
         <div class="query-file">queries\cx\tickets_por_motivo.sql</div>
       </div>
       <div class="table-wrapper">
-        <p class="dry-run">Modo dry-run: query no ejecutada.</p>
+        <p class="error">Error: 403 Access Denied: Table meli-bi-data:dataset.support_tickets: User does not have permission to query table meli-bi-data:dataset.support_tickets, or perhaps it does not exist.; reason: accessDenied, message: Access Denied: Table meli-bi-data:dataset.support_tickets: User does not have permission to query table meli-bi-data:dataset.support_tickets, or perhaps it does not exist.
+
+Location: US
+Job ID: c33784d2-82f9-4dfe-b1c5-2829e1ea9c80
+</p>
       </div>
     </div>
     
@@ -545,8 +555,8 @@
       <div class="query-card-header">
         <div class="query-title">
           NPS Mensual
+          <span class="badge badge-error">Error</span>
           
-          <span class="badge badge-dry-run">Dry run</span>
         </div>
         
         <div class="query-description">Net Promoter Score del mes actual vs anterior</div>
@@ -554,7 +564,11 @@
         <div class="query-file">queries\cx\nps_mensual.sql</div>
       </div>
       <div class="table-wrapper">
-        <p class="dry-run">Modo dry-run: query no ejecutada.</p>
+        <p class="error">Error: 403 Access Denied: Table meli-bi-data:dataset.nps_responses: User does not have permission to query table meli-bi-data:dataset.nps_responses, or perhaps it does not exist.; reason: accessDenied, message: Access Denied: Table meli-bi-data:dataset.nps_responses: User does not have permission to query table meli-bi-data:dataset.nps_responses, or perhaps it does not exist.
+
+Location: US
+Job ID: c464da54-bc2c-45b7-ac2a-9133e848229d
+</p>
       </div>
     </div>
     
@@ -565,7 +579,7 @@
 </div>
 
 <footer>
-  Período: 2026-03-01 → 2026-03-31 &nbsp;·&nbsp;
+  Período: 2026-02-01 → 2026-02-28 &nbsp;·&nbsp;
   Generado el 2026-03-04 &nbsp;·&nbsp;
   <a href="../../index.html">Ver todos los reportes</a>
 </footer>
