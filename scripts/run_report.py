@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Monthly Review Report Generator
-Conecta a BigQuery, corre todas las queries del mes y genera un HTML.
+Conecta a BigQuery y Qualtrics, corre todas las queries del mes y genera un HTML.
 
 Uso:
     python scripts/run_report.py --year 2026 --month 3
@@ -9,6 +9,7 @@ Uso:
 
 import argparse
 import calendar
+import importlib.util
 import json
 import os
 import re
@@ -38,7 +39,6 @@ def get_month_range(year: int, month: int) -> tuple[str, str]:
 
 
 def parse_sql_metadata(content: str) -> dict:
-    """Lee los metadatos del bloque de comentarios al inicio del archivo."""
     meta = {}
     for line in content.splitlines():
         stripped = line.strip()
@@ -51,7 +51,10 @@ def parse_sql_metadata(content: str) -> dict:
 
 
 def load_queries(queries_dir: Path) -> list[dict]:
+    """Carga .sql (BigQuery) y .py (fuentes Python como Qualtrics)."""
     queries = []
+
+    # --- SQL queries ---
     for sql_file in sorted(queries_dir.rglob("*.sql")):
         content = sql_file.read_text(encoding="utf-8")
         meta = parse_sql_metadata(content)
@@ -59,6 +62,7 @@ def load_queries(queries_dir: Path) -> list[dict]:
         section = meta.get("section", folder_section)
         queries.append(
             {
+                "type": "sql",
                 "file": str(sql_file.relative_to(ROOT)),
                 "section": section,
                 "title": meta.get("title", sql_file.stem.replace("_", " ").title()),
@@ -67,6 +71,35 @@ def load_queries(queries_dir: Path) -> list[dict]:
                 "order": int(meta.get("order", 99)),
             }
         )
+
+    # --- Python data sources (Qualtrics, APIs, etc.) ---
+    for py_file in sorted(queries_dir.rglob("*.py")):
+        if py_file.name.startswith("_"):
+            continue
+        try:
+            spec = importlib.util.spec_from_file_location(py_file.stem, str(py_file))
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+        except Exception as e:
+            print(f"WARNING: No se pudo cargar {py_file.name}: {e}")
+            continue
+
+        if not hasattr(mod, "run"):
+            continue
+
+        folder_section = py_file.parent.name
+        queries.append(
+            {
+                "type": "python",
+                "file": str(py_file.relative_to(ROOT)),
+                "section": getattr(mod, "SECTION", folder_section),
+                "title": getattr(mod, "TITLE", py_file.stem.replace("_", " ").title()),
+                "description": getattr(mod, "DESCRIPTION", ""),
+                "order": int(getattr(mod, "ORDER", 99)),
+                "run_fn": mod.run,
+            }
+        )
+
     queries.sort(
         key=lambda x: (
             SECTION_ORDER.get(x["section"], 99),
@@ -75,6 +108,26 @@ def load_queries(queries_dir: Path) -> list[dict]:
         )
     )
     return queries
+
+
+def load_config() -> dict:
+    """Carga configuracion desde variables de entorno y config/surveys.yaml."""
+    config = {
+        "QUALTRICS_API_TOKEN": os.getenv("QUALTRICS_API_TOKEN", ""),
+        "QUALTRICS_DATACENTER": os.getenv("QUALTRICS_DATACENTER", ""),
+        "ANTHROPIC_API_KEY": os.getenv("ANTHROPIC_API_KEY", ""),
+        "GCP_PROJECT_ID": os.getenv("GCP_PROJECT_ID", "meli-bi-data"),
+    }
+    surveys_yaml = ROOT / "config" / "surveys.yaml"
+    if surveys_yaml.exists():
+        try:
+            import yaml
+            with open(surveys_yaml, encoding="utf-8") as f:
+                yaml_config = yaml.safe_load(f) or {}
+            config.update(yaml_config)
+        except Exception as e:
+            print(f"WARNING: No se pudo cargar config/surveys.yaml: {e}")
+    return config
 
 
 def substitute_params(sql: str, params: dict) -> str:
@@ -95,7 +148,7 @@ def df_to_html(df: pd.DataFrame) -> str:
     )
 
 
-def build_client(project: str) -> bigquery.Client:
+def build_bq_client(project: str) -> bigquery.Client:
     sa_key = os.getenv("GCP_SA_KEY")
     if sa_key:
         creds = service_account.Credentials.from_service_account_info(
@@ -103,12 +156,11 @@ def build_client(project: str) -> bigquery.Client:
             scopes=["https://www.googleapis.com/auth/cloud-platform"],
         )
         return bigquery.Client(project=project, credentials=creds)
-    # Usa Application Default Credentials (gcloud auth)
     return bigquery.Client(project=project)
 
 
-def run_all_queries(client, queries, params, dry_run=False):
-    """Ejecuta todas las queries y devuelve resultados por sección."""
+def run_all_queries(bq_client, queries, params, config, dry_run=False):
+    """Ejecuta todas las queries (SQL y Python) y devuelve resultados por seccion."""
     sections: dict[str, list] = {}
 
     for q in queries:
@@ -116,26 +168,53 @@ def run_all_queries(client, queries, params, dry_run=False):
         if section not in sections:
             sections[section] = []
 
-        sql = substitute_params(q["sql"], params)
-
         print(f"  > [{section}] {q['title']} ...", end=" ", flush=True)
 
-        if dry_run:
-            table_html = '<p class="dry-run">Modo dry-run: query no ejecutada.</p>'
-            status = "dry_run"
-            error = None
-        else:
-            try:
-                df = client.query(sql).to_dataframe()
-                table_html = df_to_html(df)
-                status = "ok"
+        if q["type"] == "python":
+            if dry_run:
+                try:
+                    df = q["run_fn"](params, config, dry_run=True)
+                    table_html = df_to_html(df)
+                    status = "dry_run"
+                    error = None
+                    print(f"dry-run ({len(df)} filas)")
+                except Exception as e:
+                    table_html = f'<p class="error">Error en dry-run: {e}</p>'
+                    status = "error"
+                    error = str(e)
+                    print(f"ERROR: {e}")
+            else:
+                try:
+                    df = q["run_fn"](params, config, dry_run=False)
+                    table_html = df_to_html(df)
+                    status = "ok"
+                    error = None
+                    print(f"OK ({len(df)} filas)")
+                except Exception as e:
+                    table_html = f'<p class="error">Error: {e}</p>'
+                    status = "error"
+                    error = str(e)
+                    print(f"ERROR: {e}")
+
+        else:  # SQL
+            sql = substitute_params(q["sql"], params)
+            if dry_run:
+                table_html = '<p class="dry-run">Modo dry-run: query no ejecutada.</p>'
+                status = "dry_run"
                 error = None
-                print(f"OK ({len(df)} filas)")
-            except Exception as e:
-                table_html = f'<p class="error">Error: {e}</p>'
-                status = "error"
-                error = str(e)
-                print(f"ERROR: {e}")
+                print("dry-run")
+            else:
+                try:
+                    df = bq_client.query(sql).to_dataframe()
+                    table_html = df_to_html(df)
+                    status = "ok"
+                    error = None
+                    print(f"OK ({len(df)} filas)")
+                except Exception as e:
+                    table_html = f'<p class="error">Error: {e}</p>'
+                    status = "error"
+                    error = str(e)
+                    print(f"ERROR: {e}")
 
         sections[section].append(
             {
@@ -179,17 +258,16 @@ def render_report(sections, params, output_path: Path):
 
 def main():
     parser = argparse.ArgumentParser(description="Genera el reporte mensual HTML")
-    parser.add_argument("--year", type=int, required=True, help="Año (ej: 2026)")
-    parser.add_argument("--month", type=int, required=True, help="Mes 1-12 (ej: 3)")
+    parser.add_argument("--year", type=int, required=True)
+    parser.add_argument("--month", type=int, required=True)
     parser.add_argument(
         "--project",
         default=os.getenv("GCP_PROJECT_ID", "meli-bi-data"),
-        help="GCP project ID",
     )
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="No ejecuta queries, genera HTML vacío (para pruebas de template)",
+        help="No ejecuta queries reales (util para probar el template)",
     )
     args = parser.parse_args()
 
@@ -197,7 +275,6 @@ def main():
         print("ERROR: --month debe estar entre 1 y 12")
         sys.exit(1)
 
-    # Calcular fechas
     start_date, end_date = get_month_range(args.year, args.month)
     prev_month_date = date(args.year, args.month, 1) - timedelta(days=1)
     prev_start, prev_end = get_month_range(prev_month_date.year, prev_month_date.month)
@@ -221,15 +298,22 @@ def main():
     print(f"Output: {output_path}")
     print(f"{'='*50}\n")
 
+    config = load_config()
     queries = load_queries(ROOT / "queries")
-    print(f"Queries encontradas: {len(queries)}\n")
+
+    sql_count = sum(1 for q in queries if q["type"] == "sql")
+    py_count = sum(1 for q in queries if q["type"] == "python")
+    print(f"Queries encontradas: {len(queries)} ({sql_count} SQL, {py_count} Python)\n")
 
     if not queries:
-        print("ERROR: No se encontraron archivos .sql en queries/")
+        print("ERROR: No se encontraron queries en queries/")
         sys.exit(1)
 
-    client = None if args.dry_run else build_client(args.project)
-    sections = run_all_queries(client, queries, params, dry_run=args.dry_run)
+    bq_client = None
+    if sql_count > 0 and not args.dry_run:
+        bq_client = build_bq_client(args.project)
+
+    sections = run_all_queries(bq_client, queries, params, config, dry_run=args.dry_run)
     render_report(sections, params, output_path)
 
 

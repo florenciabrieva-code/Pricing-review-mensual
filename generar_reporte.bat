@@ -25,6 +25,13 @@ echo  Monthly Review - %YEAR%-%MONTH%
 echo ============================================================
 echo.
 
+:: Cargar variables del archivo .env si existe
+if exist .env (
+    for /f "usebackq tokens=1,2 delims== eol=#" %%a in (".env") do (
+        if not "%%a"=="" set "%%a=%%b"
+    )
+)
+
 :: Detectar uv
 where uv >nul 2>&1
 if %errorlevel% neq 0 (
