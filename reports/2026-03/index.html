@@ -283,7 +283,6 @@
         <div class="query-title">
           Revenue MoM
           
-          <span class="badge badge-dry-run">Dry run</span>
         </div>
         <div class="query-description">Comparativo de revenue entre el mes actual y el anterior</div>
         <div class="query-file">queries\business\revenue_mom.sql</div>
@@ -303,7 +302,6 @@
         <div class="query-title">
           Top 10 Categorías por Volumen
           
-          <span class="badge badge-dry-run">Dry run</span>
         </div>
         <div class="query-description">Categorías con mayor volumen de transacciones en el mes</div>
         <div class="query-file">queries\business\top_categorias.sql</div>
@@ -332,11 +330,10 @@
     <div class="query-card">
       <div class="query-card-header">
         <div class="query-title">
-          CES - Facilidad de uso por seccion
+          CES - Tendencia mensual
           
-          <span class="badge badge-dry-run">Dry run</span>
         </div>
-        <div class="query-description">Que tan facil/dificil encuentran la herramienta los usuarios que respondieron en el mes</div>
+        <div class="query-description">Evolucion mensual del CES agregado de todas las secciones (ultimos 12 meses)</div>
         <div class="query-file">queries\product\qualtrics_ces.py</div>
       </div>
 
@@ -349,7 +346,7 @@
         window.__CHARTS = window.__CHARTS || {};
         window.__CHARTS["chart-product_1"] = {
           type: "bar_grouped",
-          data: [{"Seccion":"Simulador Costos LITE","Facil %":65.2,"Neutro %":20.1,"Dificil %":14.7,"Respuestas":234},{"Seccion":"Simulador Costos","Facil %":71.8,"Neutro %":18.5,"Dificil %":9.7,"Respuestas":189},{"Seccion":"Costos","Facil %":58.3,"Neutro %":22.7,"Dificil %":19.0,"Respuestas":156},{"Seccion":"Pricing","Facil %":69.4,"Neutro %":19.2,"Dificil %":11.4,"Respuestas":312}]
+          data: [{"Mes":"ene","Facil %":55,"Neutro %":25,"Dificil %":20,"Respuestas":312},{"Mes":"feb","Facil %":52,"Neutro %":25,"Dificil %":23,"Respuestas":298},{"Mes":"mar","Facil %":55,"Neutro %":24,"Dificil %":21,"Respuestas":334},{"Mes":"abr","Facil %":53,"Neutro %":26,"Dificil %":21,"Respuestas":289},{"Mes":"may","Facil %":54,"Neutro %":24,"Dificil %":22,"Respuestas":301},{"Mes":"jun","Facil %":55,"Neutro %":24,"Dificil %":21,"Respuestas":315},{"Mes":"jul","Facil %":53,"Neutro %":24,"Dificil %":23,"Respuestas":278},{"Mes":"ago","Facil %":57,"Neutro %":23,"Dificil %":20,"Respuestas":342},{"Mes":"sep","Facil %":55,"Neutro %":23,"Dificil %":22,"Respuestas":295},{"Mes":"oct","Facil %":53,"Neutro %":25,"Dificil %":22,"Respuestas":308},{"Mes":"nov","Facil %":55,"Neutro %":24,"Dificil %":21,"Respuestas":321},{"Mes":"dic","Facil %":55,"Neutro %":24,"Dificil %":21,"Respuestas":287}]
         };
       </script>
       
@@ -361,7 +358,7 @@
         <div class="table-wrapper"><table class="dataframe data-table">
   <thead>
     <tr style="text-align: right;">
-      <th>Seccion</th>
+      <th>Mes</th>
       <th>Facil %</th>
       <th>Neutro %</th>
       <th>Dificil %</th>
@@ -370,32 +367,88 @@
   </thead>
   <tbody>
     <tr>
-      <td>Simulador Costos LITE</td>
-      <td>65.20</td>
-      <td>20.10</td>
-      <td>14.70</td>
-      <td>234</td>
-    </tr>
-    <tr>
-      <td>Simulador Costos</td>
-      <td>71.80</td>
-      <td>18.50</td>
-      <td>9.70</td>
-      <td>189</td>
-    </tr>
-    <tr>
-      <td>Costos</td>
-      <td>58.30</td>
-      <td>22.70</td>
-      <td>19.00</td>
-      <td>156</td>
-    </tr>
-    <tr>
-      <td>Pricing</td>
-      <td>69.40</td>
-      <td>19.20</td>
-      <td>11.40</td>
+      <td>ene</td>
+      <td>55</td>
+      <td>25</td>
+      <td>20</td>
       <td>312</td>
+    </tr>
+    <tr>
+      <td>feb</td>
+      <td>52</td>
+      <td>25</td>
+      <td>23</td>
+      <td>298</td>
+    </tr>
+    <tr>
+      <td>mar</td>
+      <td>55</td>
+      <td>24</td>
+      <td>21</td>
+      <td>334</td>
+    </tr>
+    <tr>
+      <td>abr</td>
+      <td>53</td>
+      <td>26</td>
+      <td>21</td>
+      <td>289</td>
+    </tr>
+    <tr>
+      <td>may</td>
+      <td>54</td>
+      <td>24</td>
+      <td>22</td>
+      <td>301</td>
+    </tr>
+    <tr>
+      <td>jun</td>
+      <td>55</td>
+      <td>24</td>
+      <td>21</td>
+      <td>315</td>
+    </tr>
+    <tr>
+      <td>jul</td>
+      <td>53</td>
+      <td>24</td>
+      <td>23</td>
+      <td>278</td>
+    </tr>
+    <tr>
+      <td>ago</td>
+      <td>57</td>
+      <td>23</td>
+      <td>20</td>
+      <td>342</td>
+    </tr>
+    <tr>
+      <td>sep</td>
+      <td>55</td>
+      <td>23</td>
+      <td>22</td>
+      <td>295</td>
+    </tr>
+    <tr>
+      <td>oct</td>
+      <td>53</td>
+      <td>25</td>
+      <td>22</td>
+      <td>308</td>
+    </tr>
+    <tr>
+      <td>nov</td>
+      <td>55</td>
+      <td>24</td>
+      <td>21</td>
+      <td>321</td>
+    </tr>
+    <tr>
+      <td>dic</td>
+      <td>55</td>
+      <td>24</td>
+      <td>21</td>
+      <td>287</td>
     </tr>
   </tbody>
 </table></div>
@@ -410,7 +463,6 @@
         <div class="query-title">
           Tiempo de respuesta - Encuestas UX
           
-          <span class="badge badge-dry-run">Dry run</span>
         </div>
         <div class="query-description">Tiempo promedio y mediana para completar cada encuesta en el mes</div>
         <div class="query-file">queries\product\qualtrics_tiempo_respuesta.py</div>
@@ -491,7 +543,6 @@
         <div class="query-title">
           Principales dudas por seccion
           
-          <span class="badge badge-dry-run">Dry run</span>
         </div>
         <div class="query-description">Categorias de dudas identificadas en las encuestas, ordenadas por representatividad</div>
         <div class="query-file">queries\product\qualtrics_dudas.py</div>
@@ -570,7 +621,6 @@
         <div class="query-title">
           Awareness - Conocimiento previo de Pricing
           
-          <span class="badge badge-dry-run">Dry run</span>
         </div>
         <div class="query-description">Porcentaje de usuarios que conocian la seccion de Pricing antes de ingresar</div>
         <div class="query-file">queries\product\qualtrics_awareness_pricing.py</div>
@@ -631,7 +681,6 @@
         <div class="query-title">
           Comunicaciones - Funnel por Campana
           
-          <span class="badge badge-dry-run">Dry run</span>
         </div>
         <div class="query-description">Funnel enviado/entregado/abierto y conversion a Costos/Pricing el mismo dia que apertura</div>
         <div class="query-file">queries\product\comunicaciones_funnel.sql</div>
@@ -651,7 +700,6 @@
         <div class="query-title">
           Comunicaciones - Tendencia 6 Meses
           
-          <span class="badge badge-dry-run">Dry run</span>
         </div>
         <div class="query-description">Evolucion mensual de enviados, abiertos y tasa de apertura por pais y canal (ultimos 6 meses)</div>
         <div class="query-file">queries\product\comunicaciones_tendencia.sql</div>
@@ -671,7 +719,6 @@
         <div class="query-title">
           Comportamiento en las Secciones
           
-          <span class="badge badge-dry-run">Dry run</span>
         </div>
         <div class="query-description">Comportamiento de usuarios en las secciones del producto (completar con tablas reales)</div>
         <div class="query-file">queries\product\comportamiento_secciones.sql</div>
@@ -702,7 +749,6 @@
         <div class="query-title">
           Tickets por Motivo
           
-          <span class="badge badge-dry-run">Dry run</span>
         </div>
         <div class="query-description">Distribución de tickets de soporte por motivo en el mes</div>
         <div class="query-file">queries\cx\tickets_por_motivo.sql</div>
@@ -722,7 +768,6 @@
         <div class="query-title">
           NPS Mensual
           
-          <span class="badge badge-dry-run">Dry run</span>
         </div>
         <div class="query-description">Net Promoter Score del mes actual vs anterior</div>
         <div class="query-file">queries\cx\nps_mensual.sql</div>
@@ -772,6 +817,16 @@ function numericCols(row) {
   return Object.keys(row).filter(k => typeof row[k] === 'number' && isFinite(row[k]));
 }
 
+// ── CES color map ─────────────────────────────────────────────────────────────
+const CES_COLORS = { 'facil': '#FFE600', 'neutro': '#888888', 'dificil': '#3d3d3d' };
+function cesColor(colName, idx) {
+  const k = colName.toLowerCase().replace(/[^a-z]/g, '');
+  for (const [key, val] of Object.entries(CES_COLORS)) {
+    if (k.includes(key)) return val;
+  }
+  return PAL[idx % PAL.length];
+}
+
 // ── Chart renderers ───────────────────────────────────────────────────────────
 function renderBarGrouped(ctx, data) {
   const cols = Object.keys(data[0]);
@@ -785,9 +840,9 @@ function renderBarGrouped(ctx, data) {
       datasets: valCols.map((col, i) => ({
         label: col,
         data: data.map(r => r[col] ?? null),
-        backgroundColor: PAL[i % PAL.length],
+        backgroundColor: cesColor(col, i),
         borderRadius: 5,
-        maxBarThickness: 52,
+        maxBarThickness: 40,
       }))
     },
     options: {
@@ -796,7 +851,7 @@ function renderBarGrouped(ctx, data) {
         legend: CHART_DEFAULTS.plugins.legend,
         datalabels: {
           anchor: 'end', align: 'end',
-          color: '#aaa', font: { size: 11, weight: '600' },
+          color: '#bbb', font: { size: 11, weight: '600' },
           formatter: v => v != null ? v + '%' : ''
         }
       },

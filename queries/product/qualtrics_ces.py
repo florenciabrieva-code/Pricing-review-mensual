@@ -1,35 +1,48 @@
 """
-CES - Facilidad de uso por seccion
+CES - Tendencia mensual de facilidad de uso (ultimos 12 meses)
 
-Lee Q1 de cada survey desde Google Sheets y clasifica en Facil / Neutro / Dificil.
-Escala en portugues: "Muito dificil" / "Dificil" / "Nem dificil nem facil" / "Facil" / "Muito facil"
+Agrega Q1 de todos los surveys desde Google Sheets, clasifica en
+Facil / Neutro / Dificil y agrupa por mes.
 """
 import sys
+from datetime import date
 from pathlib import Path
 
 import pandas as pd
 
-TITLE = "CES - Facilidad de uso por seccion"
+TITLE = "CES - Tendencia mensual"
 SECTION = "product"
-DESCRIPTION = "Que tan facil/dificil encuentran la herramienta los usuarios que respondieron en el mes"
+DESCRIPTION = "Evolucion mensual del CES agregado de todas las secciones (ultimos 12 meses)"
 ORDER = 1
 CHART_TYPE = "bar_grouped"
 
 SURVEY_ORDER = ["simulador_costos_lite", "simulador_costos", "costos", "pricing"]
-SHORT_NAMES = {
-    "simulador_costos_lite": "Simulador Costos LITE",
-    "simulador_costos": "Simulador Costos",
-    "costos": "Costos",
-    "pricing": "Pricing",
+
+MONTH_NAMES = {
+    "01": "ene", "02": "feb", "03": "mar", "04": "abr",
+    "05": "may", "06": "jun", "07": "jul", "08": "ago",
+    "09": "sep", "10": "oct", "11": "nov", "12": "dic",
 }
 
 DRY_RUN_DATA = pd.DataFrame({
-    "Seccion":      ["Simulador Costos LITE", "Simulador Costos", "Costos", "Pricing"],
-    "Facil %":      [65.2, 71.8, 58.3, 69.4],
-    "Neutro %":     [20.1, 18.5, 22.7, 19.2],
-    "Dificil %":    [14.7,  9.7, 19.0, 11.4],
-    "Respuestas":   [234,   189,  156,   312],
+    "Mes":        ["ene", "feb", "mar", "abr", "may", "jun",
+                   "jul", "ago", "sep", "oct", "nov", "dic"],
+    "Facil %":    [55, 52, 55, 53, 54, 55, 53, 57, 55, 53, 55, 55],
+    "Neutro %":   [25, 25, 24, 26, 24, 24, 24, 23, 23, 25, 24, 24],
+    "Dificil %":  [20, 23, 21, 21, 22, 21, 23, 20, 22, 22, 21, 21],
+    "Respuestas": [312, 298, 334, 289, 301, 315, 278, 342, 295, 308, 321, 287],
 })
+
+
+def _trend_start(end_date_str: str) -> str:
+    """Devuelve el primer dia de hace 11 meses (ventana de 12 meses)."""
+    end = date.fromisoformat(end_date_str)
+    m = end.month - 11
+    y = end.year
+    if m <= 0:
+        m += 12
+        y -= 1
+    return date(y, m, 1).isoformat()
 
 
 def run(params: dict, config: dict, dry_run: bool = False) -> pd.DataFrame:
@@ -41,46 +54,47 @@ def run(params: dict, config: dict, dry_run: bool = False) -> pd.DataFrame:
 
     reader = SheetsReader()
     surveys_cfg = config.get("qualtrics", {}).get("surveys", {})
+    start_trend = _trend_start(params["end_date"])
 
-    rows = []
+    all_rows = []
     for key in SURVEY_ORDER:
         sv = surveys_cfg.get(key, {})
         tab = sv.get("sheets_tab")
         ces_col = sv.get("ces_column", "Q1")
-        short = SHORT_NAMES[key]
-
         if not tab:
-            rows.append({"Seccion": short, "Facil %": None, "Neutro %": None,
-                         "Dificil %": None, "Respuestas": 0, "Nota": "sheets_tab no configurado"})
+            continue
+        try:
+            df = reader.get_survey_data(tab, start_trend, params["end_date"])
+            if df.empty or ces_col not in df.columns or "StartDate" not in df.columns:
+                continue
+            sub = df[["StartDate", ces_col]].copy()
+            sub["_dt"] = pd.to_datetime(sub["StartDate"], errors="coerce")
+            sub = sub.dropna(subset=["_dt"])
+            sub["_mes"] = sub["_dt"].dt.strftime("%Y-%m")
+            sub["_cat"] = sub[ces_col].astype(str).str.strip().apply(classify_ces)
+            all_rows.append(sub[["_mes", "_cat"]])
+        except Exception:
             continue
 
-        try:
-            df = reader.get_survey_data(tab, params["start_date"], params["end_date"])
+    if not all_rows:
+        return pd.DataFrame({"Aviso": ["Sin respuestas en el periodo"]})
 
-            if df.empty or ces_col not in df.columns:
-                rows.append({"Seccion": short, "Facil %": None, "Neutro %": None,
-                             "Dificil %": None, "Respuestas": 0, "Nota": "Sin respuestas en el periodo"})
-                continue
+    combined = pd.concat(all_rows, ignore_index=True)
+    combined = combined[combined["_cat"].isin(["Facil", "Neutro", "Dificil"])]
 
-            labels = df[ces_col].dropna().astype(str).str.strip()
-            labels = labels[labels.str.len() > 1]
-            total = len(labels)
+    grouped = combined.groupby(["_mes", "_cat"]).size().reset_index(name="cnt")
+    totals  = combined.groupby("_mes").size().reset_index(name="total")
+    merged  = grouped.merge(totals, on="_mes")
+    merged["pct"] = (merged["cnt"] / merged["total"] * 100).round(1)
 
-            if total == 0:
-                rows.append({"Seccion": short, "Facil %": None, "Neutro %": None,
-                             "Dificil %": None, "Respuestas": 0, "Nota": "Sin respuestas validas"})
-                continue
-
-            cats = labels.apply(classify_ces)
-            rows.append({
-                "Seccion":    short,
-                "Facil %":    round(100 * (cats == "Facil").sum()   / total, 1),
-                "Neutro %":   round(100 * (cats == "Neutro").sum()  / total, 1),
-                "Dificil %":  round(100 * (cats == "Dificil").sum() / total, 1),
-                "Respuestas": total,
-            })
-        except Exception as e:
-            rows.append({"Seccion": short, "Facil %": None, "Neutro %": None,
-                         "Dificil %": None, "Respuestas": 0, "Nota": f"Error: {e}"})
-
-    return pd.DataFrame(rows)
+    pivot = (
+        merged.pivot(index="_mes", columns="_cat", values="pct")
+        .reindex(columns=["Facil", "Neutro", "Dificil"])
+        .reset_index()
+        .rename(columns={"Facil": "Facil %", "Neutro": "Neutro %", "Dificil": "Dificil %"})
+    )
+    pivot = pivot.merge(totals.rename(columns={"total": "Respuestas"}), on="_mes")
+    pivot["Mes"] = pivot["_mes"].apply(
+        lambda x: MONTH_NAMES.get(x[-2:], x) if isinstance(x, str) else x
+    )
+    return pivot[["Mes", "Facil %", "Neutro %", "Dificil %", "Respuestas"]]
