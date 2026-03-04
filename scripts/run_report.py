@@ -186,37 +186,43 @@ def run_all_queries(bq_client, queries, params, config, dry_run=False):
         df_json = None
 
         if q["type"] == "python":
-            if dry_run:
-                try:
-                    df = q["run_fn"](params, config, dry_run=True)
+            try:
+                result = q["run_fn"](params, config, dry_run=dry_run)
+                status = "dry_run" if dry_run else "ok"
+                error = None
+                # Multi-output: run() devuelve lista de {title, description, df}
+                if isinstance(result, list):
+                    print(f"{'dry-run' if dry_run else 'OK'} ({len(result)} bloques)")
+                    for sub in result:
+                        sub_df = sub.get("df", pd.DataFrame())
+                        sections[section].append({
+                            "title":       sub.get("title", q["title"]),
+                            "description": sub.get("description", q["description"]),
+                            "file":        q["file"],
+                            "table_html":  df_to_html(sub_df),
+                            "chart_type":  chart_type,
+                            "df_json":     _df_to_json(sub_df, chart_type),
+                            "status":      status,
+                            "error":       None,
+                        })
+                    continue  # ya se agregaron los sub-items
+                else:
+                    df = result
                     table_html = df_to_html(df)
                     df_json = _df_to_json(df, chart_type)
-                    status = "dry_run"
-                    error = None
-                    print(f"dry-run ({len(df)} filas)")
-                except Exception as e:
-                    table_html = f'<p class="error">Error en dry-run: {e}</p>'
-                    status = "error"
-                    error = str(e)
-                    print(f"ERROR: {e}")
-            else:
-                try:
-                    df = q["run_fn"](params, config, dry_run=False)
-                    table_html = df_to_html(df)
-                    df_json = _df_to_json(df, chart_type)
-                    status = "ok"
-                    error = None
-                    print(f"OK ({len(df)} filas)")
-                except Exception as e:
-                    table_html = f'<p class="error">Error: {e}</p>'
-                    status = "error"
-                    error = str(e)
-                    print(f"ERROR: {e}")
+                    print(f"{'dry-run' if dry_run else 'OK'} ({len(df)} filas)")
+            except Exception as e:
+                table_html = f'<p class="error">Error: {e}</p>'
+                df_json = None
+                status = "error"
+                error = str(e)
+                print(f"ERROR: {e}")
 
         else:  # SQL
             sql = substitute_params(q["sql"], params)
             if dry_run:
                 table_html = '<p class="dry-run">Modo dry-run: query SQL no ejecutada.</p>'
+                df_json = None
                 status = "dry_run"
                 error = None
                 print("dry-run")
@@ -230,6 +236,7 @@ def run_all_queries(bq_client, queries, params, config, dry_run=False):
                     print(f"OK ({len(df)} filas)")
                 except Exception as e:
                     table_html = f'<p class="error">Error: {e}</p>'
+                    df_json = None
                     status = "error"
                     error = str(e)
                     print(f"ERROR: {e}")
