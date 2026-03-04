@@ -96,6 +96,7 @@ def load_queries(queries_dir: Path) -> list[dict]:
                 "title": getattr(mod, "TITLE", py_file.stem.replace("_", " ").title()),
                 "description": getattr(mod, "DESCRIPTION", ""),
                 "order": int(getattr(mod, "ORDER", 99)),
+                "chart_type": getattr(mod, "CHART_TYPE", None),
                 "run_fn": mod.run,
             }
         )
@@ -136,6 +137,17 @@ def substitute_params(sql: str, params: dict) -> str:
     return sql
 
 
+def _df_to_json(df: pd.DataFrame, chart_type: str | None) -> str | None:
+    """Serializa un DataFrame a JSON (lista de objetos) para uso en Chart.js."""
+    if chart_type is None or df is None or df.empty:
+        return None
+    try:
+        clean = df.where(df.notna(), other=None)
+        return clean.to_json(orient="records", force_ascii=False)
+    except Exception:
+        return None
+
+
 def df_to_html(df: pd.DataFrame) -> str:
     if df.empty:
         return '<p class="no-data">Sin datos para el periodo seleccionado.</p>'
@@ -170,11 +182,15 @@ def run_all_queries(bq_client, queries, params, config, dry_run=False):
 
         print(f"  > [{section}] {q['title']} ...", end=" ", flush=True)
 
+        chart_type = q.get("chart_type")
+        df_json = None
+
         if q["type"] == "python":
             if dry_run:
                 try:
                     df = q["run_fn"](params, config, dry_run=True)
                     table_html = df_to_html(df)
+                    df_json = _df_to_json(df, chart_type)
                     status = "dry_run"
                     error = None
                     print(f"dry-run ({len(df)} filas)")
@@ -187,6 +203,7 @@ def run_all_queries(bq_client, queries, params, config, dry_run=False):
                 try:
                     df = q["run_fn"](params, config, dry_run=False)
                     table_html = df_to_html(df)
+                    df_json = _df_to_json(df, chart_type)
                     status = "ok"
                     error = None
                     print(f"OK ({len(df)} filas)")
@@ -199,7 +216,7 @@ def run_all_queries(bq_client, queries, params, config, dry_run=False):
         else:  # SQL
             sql = substitute_params(q["sql"], params)
             if dry_run:
-                table_html = '<p class="dry-run">Modo dry-run: query no ejecutada.</p>'
+                table_html = '<p class="dry-run">Modo dry-run: query SQL no ejecutada.</p>'
                 status = "dry_run"
                 error = None
                 print("dry-run")
@@ -207,6 +224,7 @@ def run_all_queries(bq_client, queries, params, config, dry_run=False):
                 try:
                     df = bq_client.query(sql).to_dataframe()
                     table_html = df_to_html(df)
+                    df_json = _df_to_json(df, chart_type)
                     status = "ok"
                     error = None
                     print(f"OK ({len(df)} filas)")
@@ -222,6 +240,8 @@ def run_all_queries(bq_client, queries, params, config, dry_run=False):
                 "description": q["description"],
                 "file": q["file"],
                 "table_html": table_html,
+                "chart_type": chart_type,
+                "df_json": df_json,
                 "status": status,
                 "error": error,
             }

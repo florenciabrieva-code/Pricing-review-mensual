@@ -12,6 +12,7 @@ TITLE = "Tiempo de respuesta - Encuestas UX"
 SECTION = "product"
 DESCRIPTION = "Tiempo promedio y mediana para completar cada encuesta en el mes"
 ORDER = 2
+CHART_TYPE = "bar_horizontal"
 
 SURVEY_ORDER = ["simulador_costos_lite", "simulador_costos", "costos", "pricing"]
 SHORT_NAMES = {

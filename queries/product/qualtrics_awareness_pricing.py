@@ -13,6 +13,7 @@ TITLE = "Awareness - Conocimiento previo de Pricing"
 SECTION = "product"
 DESCRIPTION = "Porcentaje de usuarios que conocian la seccion de Pricing antes de ingresar"
 ORDER = 4
+CHART_TYPE = "doughnut"
 
 DRY_RUN_DATA = pd.DataFrame({
     "Respuesta":   ["Sim, sabia", "Nao sabia", "Ja vi mas nao usei"],

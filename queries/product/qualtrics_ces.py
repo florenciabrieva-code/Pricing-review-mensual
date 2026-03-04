@@ -13,6 +13,7 @@ TITLE = "CES - Facilidad de uso por seccion"
 SECTION = "product"
 DESCRIPTION = "Que tan facil/dificil encuentran la herramienta los usuarios que respondieron en el mes"
 ORDER = 1
+CHART_TYPE = "bar_grouped"
 
 SURVEY_ORDER = ["simulador_costos_lite", "simulador_costos", "costos", "pricing"]
 SHORT_NAMES = {
