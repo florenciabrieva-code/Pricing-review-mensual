@@ -25,24 +25,16 @@ echo  Monthly Review - %YEAR%-%MONTH%
 echo ============================================================
 echo.
 
-:: Detectar Python
-where python >nul 2>&1
+:: Detectar uv
+where uv >nul 2>&1
 if %errorlevel% neq 0 (
-    echo ERROR: Python no encontrado en el PATH
-    exit /b 1
-)
-
-:: Instalar dependencias si hace falta
-echo [1/4] Verificando dependencias...
-pip install -q -r scripts\requirements.txt
-if %errorlevel% neq 0 (
-    echo ERROR: Fallo la instalacion de dependencias
+    echo ERROR: uv no encontrado. Instalar desde https://docs.astral.sh/uv/
     exit /b 1
 )
 
 :: Correr el reporte
 echo [2/4] Generando reporte en BigQuery...
-python scripts\run_report.py --year %YEAR% --month %MONTH%
+uv run --with-requirements scripts\requirements.txt scripts\run_report.py --year %YEAR% --month %MONTH%
 if %errorlevel% neq 0 (
     echo ERROR: Fallo la generacion del reporte
     exit /b 1
@@ -50,7 +42,7 @@ if %errorlevel% neq 0 (
 
 :: Actualizar index
 echo [3/4] Actualizando index.html...
-python scripts\update_index.py
+uv run --with-requirements scripts\requirements.txt scripts\update_index.py
 if %errorlevel% neq 0 (
     echo ERROR: Fallo la actualizacion del index
     exit /b 1

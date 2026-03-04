@@ -53,9 +53,8 @@ El reporte queda en: `https://florenciabrieva-code.github.io/Pricing-review-mens
 ### Manualmente (paso a paso)
 
 ```bash
-pip install -r scripts/requirements.txt
-python scripts/run_report.py --year 2026 --month 3
-python scripts/update_index.py
+uv run --with-requirements scripts/requirements.txt scripts/run_report.py --year 2026 --month 3
+uv run --with-requirements scripts/requirements.txt scripts/update_index.py
 git add reports/ index.html
 git commit -m "report: reporte 2026-03"
 git push
@@ -64,7 +63,7 @@ git push
 ### Dry run (probar template sin ejecutar queries)
 
 ```bash
-python scripts/run_report.py --year 2026 --month 3 --dry-run
+uv run --with-requirements scripts/requirements.txt scripts/run_report.py --year 2026 --month 3 --dry-run
 ```
 
 ## Agregar una nueva query
