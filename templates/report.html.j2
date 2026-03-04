@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monthly Review — {{ month_name }} {{ params.year }}</title>
+  <style>
+    /* Reset & base */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #1a1a1a;
+      line-height: 1.5;
+    }
+
+    /* Header */
+    header {
+      background: #009ee3;
+      color: white;
+      padding: 36px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    header .header-title h1 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.5px; }
+    header .header-title p { opacity: 0.85; margin-top: 4px; font-size: 0.95rem; }
+    header .header-period {
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      padding: 12px 20px;
+      text-align: center;
+    }
+    header .header-period .period-month { font-size: 1.4rem; font-weight: 700; }
+    header .header-period .period-year { font-size: 0.9rem; opacity: 0.85; }
+
+    /* Nav */
+    nav {
+      background: white;
+      border-bottom: 1px solid #e5e5e5;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0 48px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    nav a {
+      display: inline-block;
+      padding: 14px 18px;
+      text-decoration: none;
+      color: #555;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-bottom: 3px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    nav a:hover { color: #009ee3; border-bottom-color: #009ee3; }
+    nav .nav-home { color: #aaa; font-size: 0.85rem; }
+
+    /* Main layout */
+    .container { max-width: 1200px; margin: 40px auto; padding: 0 24px; }
+
+    /* Section */
+    .section { margin-bottom: 56px; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e5e5e5;
+    }
+    .section-icon { font-size: 1.4rem; }
+    .section-title { font-size: 1.3rem; font-weight: 700; color: #1a1a1a; }
+    .section-count { font-size: 0.8rem; color: #aaa; background: #f0f0f0; border-radius: 20px; padding: 2px 10px; }
+
+    /* Query cards */
+    .query-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      border: 1px solid #e5e5e5;
+    }
+    .query-card-header { margin-bottom: 16px; }
+    .query-title { font-size: 1rem; font-weight: 600; color: #1a1a1a; }
+    .query-description { font-size: 0.88rem; color: #777; margin-top: 4px; }
+    .query-file { font-size: 0.75rem; color: #bbb; margin-top: 6px; font-family: monospace; }
+
+    /* Status badges */
+    .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .badge-error { background: #fef2f2; color: #dc2626; }
+    .badge-dry-run { background: #fef9c3; color: #854d0e; }
+
+    /* Tables */
+    .table-wrapper { overflow-x: auto; }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    .data-table thead th {
+      background: #f8f9fa;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #666;
+      border-bottom: 2px solid #e5e5e5;
+      white-space: nowrap;
+    }
+    .data-table tbody td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #f0f0f0;
+      color: #333;
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover td { background: #fafafa; }
+    .data-table tbody td:first-child { font-weight: 500; }
+
+    /* Numeric columns align right */
+    .data-table td:not(:first-child) { text-align: right; }
+    .data-table th:not(:first-child) { text-align: right; }
+
+    /* States */
+    .no-data { color: #999; font-size: 0.9rem; padding: 16px 0; }
+    .error { color: #dc2626; font-size: 0.85rem; padding: 12px 16px; background: #fef2f2; border-radius: 8px; }
+    .dry-run { color: #854d0e; font-size: 0.85rem; padding: 12px 16px; background: #fef9c3; border-radius: 8px; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 24px;
+      color: #bbb;
+      font-size: 0.8rem;
+      border-top: 1px solid #e5e5e5;
+      margin-top: 40px;
+    }
+    footer a { color: #009ee3; text-decoration: none; }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      header { padding: 24px; }
+      nav { padding: 0 16px; }
+      .container { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-title">
+    <h1>Monthly Review</h1>
+    <p>Negocio · Producto · CX</p>
+  </div>
+  <div class="header-period">
+    <div class="period-month">{{ month_name }}</div>
+    <div class="period-year">{{ params.year }}</div>
+  </div>
+</header>
+
+<nav>
+  <a href="../../index.html" class="nav-home">← Todos los reportes</a>
+  {% for section_key in sections.keys() %}
+  <a href="#{{ section_key }}">{{ section_labels.get(section_key, section_key | title) }}</a>
+  {% endfor %}
+</nav>
+
+<div class="container">
+
+  {% set section_icons = {"business": "📊", "product": "📦", "cx": "💬"} %}
+
+  {% for section_key, items in sections.items() %}
+  <section class="section" id="{{ section_key }}">
+    <div class="section-header">
+      <span class="section-icon">{{ section_icons.get(section_key, "📋") }}</span>
+      <span class="section-title">{{ section_labels.get(section_key, section_key | title) }}</span>
+      <span class="section-count">{{ items | length }} métricas</span>
+    </div>
+
+    {% for item in items %}
+    <div class="query-card">
+      <div class="query-card-header">
+        <div class="query-title">
+          {{ item.title }}
+          {% if item.status == 'error' %}<span class="badge badge-error">Error</span>{% endif %}
+          {% if item.status == 'dry_run' %}<span class="badge badge-dry-run">Dry run</span>{% endif %}
+        </div>
+        {% if item.description %}
+        <div class="query-description">{{ item.description }}</div>
+        {% endif %}
+        <div class="query-file">{{ item.file }}</div>
+      </div>
+      <div class="table-wrapper">
+        {{ item.table_html | safe }}
+      </div>
+    </div>
+    {% endfor %}
+
+  </section>
+  {% endfor %}
+
+</div>
+
+<footer>
+  Período: {{ params.start_date }} → {{ params.end_date }} &nbsp;·&nbsp;
+  Generado el {{ generated_at }} &nbsp;·&nbsp;
+  <a href="../../index.html">Ver todos los reportes</a>
+</footer>
+
+</body>
+</html>
