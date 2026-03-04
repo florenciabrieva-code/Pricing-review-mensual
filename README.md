@@ -33,30 +33,38 @@ monthly-review/
 
 ## Generar un reporte
 
-### Desde GitHub Actions (recomendado)
+### Con el script (recomendado)
 
-1. Ir a **Actions → Generar Reporte Mensual → Run workflow**
-2. Completar `year` y `month`
-3. El reporte queda en `https://<org>.github.io/<repo>/reports/YYYY-MM/`
+Desde la carpeta del repo, correr en CMD o PowerShell:
 
-### Localmente
+```
+generar_reporte.bat 2026 3
+```
+
+Esto:
+1. Corre las queries en BigQuery (usando tus credenciales de gcloud)
+2. Genera el HTML en `reports/2026-03/`
+3. Actualiza el `index.html`
+4. Commitea y pushea a GitHub
+5. GitHub Actions despliega automáticamente a GitHub Pages
+
+El reporte queda en: `https://florenciabrieva-code.github.io/Pricing-review-mensual/reports/2026-03/`
+
+### Manualmente (paso a paso)
 
 ```bash
-# Instalar dependencias
 pip install -r scripts/requirements.txt
-
-# Con Application Default Credentials (gcloud auth application-default login)
 python scripts/run_report.py --year 2026 --month 3
-
-# Con Service Account JSON
-export GCP_SA_KEY=$(cat mi-service-account.json)
-python scripts/run_report.py --year 2026 --month 3
-
-# Dry run (sin ejecutar queries, para probar el template)
-python scripts/run_report.py --year 2026 --month 3 --dry-run
-
-# Actualizar index.html
 python scripts/update_index.py
+git add reports/ index.html
+git commit -m "report: reporte 2026-03"
+git push
+```
+
+### Dry run (probar template sin ejecutar queries)
+
+```bash
+python scripts/run_report.py --year 2026 --month 3 --dry-run
 ```
 
 ## Agregar una nueva query
@@ -78,22 +86,17 @@ WHERE DATE(col) BETWEEN '{{ start_date }}' AND '{{ end_date }}'
 
 ## Configuración de GitHub
 
-### Secrets (Settings → Secrets and variables → Actions)
-
-| Secret | Descripción |
-|--------|-------------|
-| `GCP_SA_KEY` | JSON completo del Service Account de BigQuery |
-
-### Variables (Settings → Secrets and variables → Actions → Variables)
-
-| Variable | Ejemplo | Descripción |
-|----------|---------|-------------|
-| `GCP_PROJECT_ID` | `meli-bi-data` | GCP Project ID |
-
 ### GitHub Pages (Settings → Pages)
 
 - **Source**: GitHub Actions
-- El workflow lo configura automáticamente en cada ejecución
+- Se despliega automáticamente cada vez que se pushean cambios en `reports/` o `index.html`
+
+### Requisito local
+
+Tener autenticación de gcloud activa:
+```
+gcloud auth application-default login
+```
 
 ## Parámetros disponibles en queries
 
