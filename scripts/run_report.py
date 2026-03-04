@@ -85,12 +85,12 @@ def substitute_params(sql: str, params: dict) -> str:
 
 def df_to_html(df: pd.DataFrame) -> str:
     if df.empty:
-        return '<p class="no-data">Sin datos para el período seleccionado.</p>'
+        return '<p class="no-data">Sin datos para el periodo seleccionado.</p>'
     return df.to_html(
         index=False,
         classes="data-table",
         border=0,
-        na_rep="—",
+        na_rep="-",
         float_format=lambda x: f"{x:,.2f}",
     )
 
@@ -118,7 +118,7 @@ def run_all_queries(client, queries, params, dry_run=False):
 
         sql = substitute_params(q["sql"], params)
 
-        print(f"  → [{section}] {q['title']} ...", end=" ", flush=True)
+        print(f"  > [{section}] {q['title']} ...", end=" ", flush=True)
 
         if dry_run:
             table_html = '<p class="dry-run">Modo dry-run: query no ejecutada.</p>'
@@ -215,8 +215,8 @@ def main():
     output_path = ROOT / "reports" / f"{args.year}-{args.month:02d}" / "index.html"
 
     print(f"\n{'='*50}")
-    print(f"Monthly Review — {args.year}-{args.month:02d}")
-    print(f"Período: {start_date} → {end_date}")
+    print(f"Monthly Review - {args.year}-{args.month:02d}")
+    print(f"Periodo: {start_date} -> {end_date}")
     print(f"Proyecto BQ: {args.project}")
     print(f"Output: {output_path}")
     print(f"{'='*50}\n")
