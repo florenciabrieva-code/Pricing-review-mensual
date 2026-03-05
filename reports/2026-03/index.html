@@ -85,6 +85,18 @@
     /* ── Layout ─────────────────────────────────────────────── */
     .container { max-width: 1280px; margin: 36px auto; padding: 0 28px; }
 
+    /* ── Cards grid ──────────────────────────────────────────── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .cards-grid .query-card        { grid-column: span 2; margin-bottom: 0; }
+    .cards-grid .query-card--half  { grid-column: span 1; }
+    @media (max-width: 900px) {
+      .cards-grid .query-card--half { grid-column: span 2; }
+    }
+
     /* ── Section ────────────────────────────────────────────── */
     .section { margin-bottom: 56px; }
     .section-header {
@@ -276,6 +288,7 @@
       <span class="section-count">2 metricas</span>
     </div>
 
+    <div class="cards-grid">
     
     
     <div class="query-card">
@@ -315,6 +328,7 @@
 
     </div>
     
+    </div>
 
   </section>
   
@@ -325,9 +339,10 @@
       <span class="section-count">10 metricas</span>
     </div>
 
+    <div class="cards-grid">
     
     
-    <div class="query-card">
+    <div class="query-card query-card--half">
       <div class="query-card-header">
         <div class="query-title">
           CES - Simulador Costos LITE
@@ -345,8 +360,8 @@
       <script>
         window.__CHARTS = window.__CHARTS || {};
         window.__CHARTS["chart-product_1"] = {
-          type: "bar_grouped",
-          data: [{"Mes":"ene","Facil %":65,"Neutro %":20,"Dificil %":15,"Respuestas":80},{"Mes":"feb","Facil %":62,"Neutro %":20,"Dificil %":18,"Respuestas":75},{"Mes":"mar","Facil %":65,"Neutro %":19,"Dificil %":16,"Respuestas":85},{"Mes":"abr","Facil %":63,"Neutro %":21,"Dificil %":16,"Respuestas":70},{"Mes":"may","Facil %":64,"Neutro %":19,"Dificil %":17,"Respuestas":78},{"Mes":"jun","Facil %":65,"Neutro %":19,"Dificil %":16,"Respuestas":82},{"Mes":"jul","Facil %":63,"Neutro %":19,"Dificil %":18,"Respuestas":68},{"Mes":"ago","Facil %":67,"Neutro %":18,"Dificil %":15,"Respuestas":90},{"Mes":"sep","Facil %":65,"Neutro %":18,"Dificil %":17,"Respuestas":76},{"Mes":"oct","Facil %":63,"Neutro %":20,"Dificil %":17,"Respuestas":82},{"Mes":"nov","Facil %":65,"Neutro %":19,"Dificil %":16,"Respuestas":84},{"Mes":"dic","Facil %":65,"Neutro %":19,"Dificil %":16,"Respuestas":73}]
+          type: "line",
+          data: [{"Mes":"oct","Facil %":63,"Neutro %":20,"Dificil %":17,"Respuestas":82},{"Mes":"nov","Facil %":65,"Neutro %":19,"Dificil %":16,"Respuestas":84},{"Mes":"dic","Facil %":65,"Neutro %":19,"Dificil %":16,"Respuestas":73},{"Mes":"ene","Facil %":65,"Neutro %":20,"Dificil %":15,"Respuestas":80},{"Mes":"feb","Facil %":62,"Neutro %":20,"Dificil %":18,"Respuestas":75},{"Mes":"mar","Facil %":65,"Neutro %":19,"Dificil %":16,"Respuestas":85}]
         };
       </script>
       
@@ -366,69 +381,6 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>ene</td>
-      <td>65</td>
-      <td>20</td>
-      <td>15</td>
-      <td>80</td>
-    </tr>
-    <tr>
-      <td>feb</td>
-      <td>62</td>
-      <td>20</td>
-      <td>18</td>
-      <td>75</td>
-    </tr>
-    <tr>
-      <td>mar</td>
-      <td>65</td>
-      <td>19</td>
-      <td>16</td>
-      <td>85</td>
-    </tr>
-    <tr>
-      <td>abr</td>
-      <td>63</td>
-      <td>21</td>
-      <td>16</td>
-      <td>70</td>
-    </tr>
-    <tr>
-      <td>may</td>
-      <td>64</td>
-      <td>19</td>
-      <td>17</td>
-      <td>78</td>
-    </tr>
-    <tr>
-      <td>jun</td>
-      <td>65</td>
-      <td>19</td>
-      <td>16</td>
-      <td>82</td>
-    </tr>
-    <tr>
-      <td>jul</td>
-      <td>63</td>
-      <td>19</td>
-      <td>18</td>
-      <td>68</td>
-    </tr>
-    <tr>
-      <td>ago</td>
-      <td>67</td>
-      <td>18</td>
-      <td>15</td>
-      <td>90</td>
-    </tr>
-    <tr>
-      <td>sep</td>
-      <td>65</td>
-      <td>18</td>
-      <td>17</td>
-      <td>76</td>
-    </tr>
     <tr>
       <td>oct</td>
       <td>63</td>
@@ -450,6 +402,27 @@
       <td>16</td>
       <td>73</td>
     </tr>
+    <tr>
+      <td>ene</td>
+      <td>65</td>
+      <td>20</td>
+      <td>15</td>
+      <td>80</td>
+    </tr>
+    <tr>
+      <td>feb</td>
+      <td>62</td>
+      <td>20</td>
+      <td>18</td>
+      <td>75</td>
+    </tr>
+    <tr>
+      <td>mar</td>
+      <td>65</td>
+      <td>19</td>
+      <td>16</td>
+      <td>85</td>
+    </tr>
   </tbody>
 </table></div>
       </div>
@@ -458,7 +431,7 @@
     </div>
     
     
-    <div class="query-card">
+    <div class="query-card query-card--half">
       <div class="query-card-header">
         <div class="query-title">
           CES - Simulador Costos
@@ -476,8 +449,8 @@
       <script>
         window.__CHARTS = window.__CHARTS || {};
         window.__CHARTS["chart-product_2"] = {
-          type: "bar_grouped",
-          data: [{"Mes":"ene","Facil %":70,"Neutro %":19,"Dificil %":11,"Respuestas":65},{"Mes":"feb","Facil %":68,"Neutro %":20,"Dificil %":12,"Respuestas":60},{"Mes":"mar","Facil %":72,"Neutro %":18,"Dificil %":10,"Respuestas":72},{"Mes":"abr","Facil %":69,"Neutro %":21,"Dificil %":10,"Respuestas":58},{"Mes":"may","Facil %":71,"Neutro %":19,"Dificil %":10,"Respuestas":65},{"Mes":"jun","Facil %":70,"Neutro %":19,"Dificil %":11,"Respuestas":69},{"Mes":"jul","Facil %":68,"Neutro %":20,"Dificil %":12,"Respuestas":55},{"Mes":"ago","Facil %":73,"Neutro %":17,"Dificil %":10,"Respuestas":78},{"Mes":"sep","Facil %":71,"Neutro %":18,"Dificil %":11,"Respuestas":63},{"Mes":"oct","Facil %":69,"Neutro %":20,"Dificil %":11,"Respuestas":68},{"Mes":"nov","Facil %":70,"Neutro %":19,"Dificil %":11,"Respuestas":70},{"Mes":"dic","Facil %":72,"Neutro %":18,"Dificil %":10,"Respuestas":61}]
+          type: "line",
+          data: [{"Mes":"oct","Facil %":69,"Neutro %":20,"Dificil %":11,"Respuestas":68},{"Mes":"nov","Facil %":70,"Neutro %":19,"Dificil %":11,"Respuestas":70},{"Mes":"dic","Facil %":72,"Neutro %":18,"Dificil %":10,"Respuestas":61},{"Mes":"ene","Facil %":70,"Neutro %":19,"Dificil %":11,"Respuestas":65},{"Mes":"feb","Facil %":68,"Neutro %":20,"Dificil %":12,"Respuestas":60},{"Mes":"mar","Facil %":72,"Neutro %":18,"Dificil %":10,"Respuestas":72}]
         };
       </script>
       
@@ -497,69 +470,6 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>ene</td>
-      <td>70</td>
-      <td>19</td>
-      <td>11</td>
-      <td>65</td>
-    </tr>
-    <tr>
-      <td>feb</td>
-      <td>68</td>
-      <td>20</td>
-      <td>12</td>
-      <td>60</td>
-    </tr>
-    <tr>
-      <td>mar</td>
-      <td>72</td>
-      <td>18</td>
-      <td>10</td>
-      <td>72</td>
-    </tr>
-    <tr>
-      <td>abr</td>
-      <td>69</td>
-      <td>21</td>
-      <td>10</td>
-      <td>58</td>
-    </tr>
-    <tr>
-      <td>may</td>
-      <td>71</td>
-      <td>19</td>
-      <td>10</td>
-      <td>65</td>
-    </tr>
-    <tr>
-      <td>jun</td>
-      <td>70</td>
-      <td>19</td>
-      <td>11</td>
-      <td>69</td>
-    </tr>
-    <tr>
-      <td>jul</td>
-      <td>68</td>
-      <td>20</td>
-      <td>12</td>
-      <td>55</td>
-    </tr>
-    <tr>
-      <td>ago</td>
-      <td>73</td>
-      <td>17</td>
-      <td>10</td>
-      <td>78</td>
-    </tr>
-    <tr>
-      <td>sep</td>
-      <td>71</td>
-      <td>18</td>
-      <td>11</td>
-      <td>63</td>
-    </tr>
     <tr>
       <td>oct</td>
       <td>69</td>
@@ -581,6 +491,27 @@
       <td>10</td>
       <td>61</td>
     </tr>
+    <tr>
+      <td>ene</td>
+      <td>70</td>
+      <td>19</td>
+      <td>11</td>
+      <td>65</td>
+    </tr>
+    <tr>
+      <td>feb</td>
+      <td>68</td>
+      <td>20</td>
+      <td>12</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <td>mar</td>
+      <td>72</td>
+      <td>18</td>
+      <td>10</td>
+      <td>72</td>
+    </tr>
   </tbody>
 </table></div>
       </div>
@@ -589,13 +520,13 @@
     </div>
     
     
-    <div class="query-card">
+    <div class="query-card query-card--half">
       <div class="query-card-header">
         <div class="query-title">
-          CES - Costos
+          CES - Pricing
           
         </div>
-        <div class="query-description">Tendencia mensual de facilidad de uso - Costos</div>
+        <div class="query-description">Tendencia mensual de facilidad de uso - Pricing</div>
         <div class="query-file">queries\product\qualtrics_ces.py</div>
       </div>
 
@@ -607,8 +538,8 @@
       <script>
         window.__CHARTS = window.__CHARTS || {};
         window.__CHARTS["chart-product_3"] = {
-          type: "bar_grouped",
-          data: [{"Mes":"ene","Facil %":58,"Neutro %":23,"Dificil %":19,"Respuestas":55},{"Mes":"feb","Facil %":55,"Neutro %":24,"Dificil %":21,"Respuestas":50},{"Mes":"mar","Facil %":58,"Neutro %":23,"Dificil %":19,"Respuestas":60},{"Mes":"abr","Facil %":56,"Neutro %":25,"Dificil %":19,"Respuestas":48},{"Mes":"may","Facil %":57,"Neutro %":23,"Dificil %":20,"Respuestas":52},{"Mes":"jun","Facil %":58,"Neutro %":23,"Dificil %":19,"Respuestas":57},{"Mes":"jul","Facil %":56,"Neutro %":23,"Dificil %":21,"Respuestas":46},{"Mes":"ago","Facil %":60,"Neutro %":22,"Dificil %":18,"Respuestas":65},{"Mes":"sep","Facil %":58,"Neutro %":22,"Dificil %":20,"Respuestas":52},{"Mes":"oct","Facil %":56,"Neutro %":24,"Dificil %":20,"Respuestas":55},{"Mes":"nov","Facil %":58,"Neutro %":23,"Dificil %":19,"Respuestas":58},{"Mes":"dic","Facil %":58,"Neutro %":23,"Dificil %":19,"Respuestas":50}]
+          type: "line",
+          data: [{"Mes":"oct","Facil %":67,"Neutro %":20,"Dificil %":13,"Respuestas":112},{"Mes":"nov","Facil %":69,"Neutro %":19,"Dificil %":12,"Respuestas":119},{"Mes":"dic","Facil %":69,"Neutro %":19,"Dificil %":12,"Respuestas":105},{"Mes":"ene","Facil %":69,"Neutro %":19,"Dificil %":12,"Respuestas":112},{"Mes":"feb","Facil %":66,"Neutro %":20,"Dificil %":14,"Respuestas":105},{"Mes":"mar","Facil %":69,"Neutro %":19,"Dificil %":12,"Respuestas":118}]
         };
       </script>
       
@@ -629,136 +560,26 @@
   </thead>
   <tbody>
     <tr>
-      <td>ene</td>
-      <td>58</td>
-      <td>23</td>
-      <td>19</td>
-      <td>55</td>
-    </tr>
-    <tr>
-      <td>feb</td>
-      <td>55</td>
-      <td>24</td>
-      <td>21</td>
-      <td>50</td>
-    </tr>
-    <tr>
-      <td>mar</td>
-      <td>58</td>
-      <td>23</td>
-      <td>19</td>
-      <td>60</td>
-    </tr>
-    <tr>
-      <td>abr</td>
-      <td>56</td>
-      <td>25</td>
-      <td>19</td>
-      <td>48</td>
-    </tr>
-    <tr>
-      <td>may</td>
-      <td>57</td>
-      <td>23</td>
-      <td>20</td>
-      <td>52</td>
-    </tr>
-    <tr>
-      <td>jun</td>
-      <td>58</td>
-      <td>23</td>
-      <td>19</td>
-      <td>57</td>
-    </tr>
-    <tr>
-      <td>jul</td>
-      <td>56</td>
-      <td>23</td>
-      <td>21</td>
-      <td>46</td>
-    </tr>
-    <tr>
-      <td>ago</td>
-      <td>60</td>
-      <td>22</td>
-      <td>18</td>
-      <td>65</td>
-    </tr>
-    <tr>
-      <td>sep</td>
-      <td>58</td>
-      <td>22</td>
-      <td>20</td>
-      <td>52</td>
-    </tr>
-    <tr>
       <td>oct</td>
-      <td>56</td>
-      <td>24</td>
+      <td>67</td>
       <td>20</td>
-      <td>55</td>
+      <td>13</td>
+      <td>112</td>
     </tr>
     <tr>
       <td>nov</td>
-      <td>58</td>
-      <td>23</td>
+      <td>69</td>
       <td>19</td>
-      <td>58</td>
+      <td>12</td>
+      <td>119</td>
     </tr>
     <tr>
       <td>dic</td>
-      <td>58</td>
-      <td>23</td>
+      <td>69</td>
       <td>19</td>
-      <td>50</td>
+      <td>12</td>
+      <td>105</td>
     </tr>
-  </tbody>
-</table></div>
-      </div>
-      
-
-    </div>
-    
-    
-    <div class="query-card">
-      <div class="query-card-header">
-        <div class="query-title">
-          CES - Pricing
-          
-        </div>
-        <div class="query-description">Tendencia mensual de facilidad de uso - Pricing</div>
-        <div class="query-file">queries\product\qualtrics_ces.py</div>
-      </div>
-
-      
-      
-      <div class="chart-area">
-        <canvas id="chart-product_4"></canvas>
-      </div>
-      <script>
-        window.__CHARTS = window.__CHARTS || {};
-        window.__CHARTS["chart-product_4"] = {
-          type: "bar_grouped",
-          data: [{"Mes":"ene","Facil %":69,"Neutro %":19,"Dificil %":12,"Respuestas":112},{"Mes":"feb","Facil %":66,"Neutro %":20,"Dificil %":14,"Respuestas":105},{"Mes":"mar","Facil %":69,"Neutro %":19,"Dificil %":12,"Respuestas":118},{"Mes":"abr","Facil %":67,"Neutro %":21,"Dificil %":12,"Respuestas":100},{"Mes":"may","Facil %":68,"Neutro %":19,"Dificil %":13,"Respuestas":108},{"Mes":"jun","Facil %":69,"Neutro %":19,"Dificil %":12,"Respuestas":115},{"Mes":"jul","Facil %":67,"Neutro %":20,"Dificil %":13,"Respuestas":96},{"Mes":"ago","Facil %":71,"Neutro %":18,"Dificil %":11,"Respuestas":124},{"Mes":"sep","Facil %":69,"Neutro %":18,"Dificil %":13,"Respuestas":108},{"Mes":"oct","Facil %":67,"Neutro %":20,"Dificil %":13,"Respuestas":112},{"Mes":"nov","Facil %":69,"Neutro %":19,"Dificil %":12,"Respuestas":119},{"Mes":"dic","Facil %":69,"Neutro %":19,"Dificil %":12,"Respuestas":105}]
-        };
-      </script>
-      
-      <div class="table-toggle" onclick="toggleTable('product_4')">
-        <span class="table-toggle-arrow" id="arrow-product_4">▼</span>
-        Ver tabla de datos
-      </div>
-      <div class="table-collapsible" id="tbl-product_4">
-        <div class="table-wrapper"><table class="dataframe data-table">
-  <thead>
-    <tr style="text-align: right;">
-      <th>Mes</th>
-      <th>Facil %</th>
-      <th>Neutro %</th>
-      <th>Dificil %</th>
-      <th>Respuestas</th>
-    </tr>
-  </thead>
-  <tbody>
     <tr>
       <td>ene</td>
       <td>69</td>
@@ -780,68 +601,94 @@
       <td>12</td>
       <td>118</td>
     </tr>
-    <tr>
-      <td>abr</td>
-      <td>67</td>
-      <td>21</td>
-      <td>12</td>
-      <td>100</td>
+  </tbody>
+</table></div>
+      </div>
+      
+
+    </div>
+    
+    
+    <div class="query-card query-card--half">
+      <div class="query-card-header">
+        <div class="query-title">
+          CES - Costos
+          
+        </div>
+        <div class="query-description">Tendencia mensual de facilidad de uso - Costos</div>
+        <div class="query-file">queries\product\qualtrics_ces.py</div>
+      </div>
+
+      
+      
+      <div class="chart-area">
+        <canvas id="chart-product_4"></canvas>
+      </div>
+      <script>
+        window.__CHARTS = window.__CHARTS || {};
+        window.__CHARTS["chart-product_4"] = {
+          type: "line",
+          data: [{"Mes":"oct","Facil %":56,"Neutro %":24,"Dificil %":20,"Respuestas":55},{"Mes":"nov","Facil %":58,"Neutro %":23,"Dificil %":19,"Respuestas":58},{"Mes":"dic","Facil %":58,"Neutro %":23,"Dificil %":19,"Respuestas":50},{"Mes":"ene","Facil %":58,"Neutro %":23,"Dificil %":19,"Respuestas":55},{"Mes":"feb","Facil %":55,"Neutro %":24,"Dificil %":21,"Respuestas":50},{"Mes":"mar","Facil %":58,"Neutro %":23,"Dificil %":19,"Respuestas":60}]
+        };
+      </script>
+      
+      <div class="table-toggle" onclick="toggleTable('product_4')">
+        <span class="table-toggle-arrow" id="arrow-product_4">▼</span>
+        Ver tabla de datos
+      </div>
+      <div class="table-collapsible" id="tbl-product_4">
+        <div class="table-wrapper"><table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Mes</th>
+      <th>Facil %</th>
+      <th>Neutro %</th>
+      <th>Dificil %</th>
+      <th>Respuestas</th>
     </tr>
-    <tr>
-      <td>may</td>
-      <td>68</td>
-      <td>19</td>
-      <td>13</td>
-      <td>108</td>
-    </tr>
-    <tr>
-      <td>jun</td>
-      <td>69</td>
-      <td>19</td>
-      <td>12</td>
-      <td>115</td>
-    </tr>
-    <tr>
-      <td>jul</td>
-      <td>67</td>
-      <td>20</td>
-      <td>13</td>
-      <td>96</td>
-    </tr>
-    <tr>
-      <td>ago</td>
-      <td>71</td>
-      <td>18</td>
-      <td>11</td>
-      <td>124</td>
-    </tr>
-    <tr>
-      <td>sep</td>
-      <td>69</td>
-      <td>18</td>
-      <td>13</td>
-      <td>108</td>
-    </tr>
+  </thead>
+  <tbody>
     <tr>
       <td>oct</td>
-      <td>67</td>
+      <td>56</td>
+      <td>24</td>
       <td>20</td>
-      <td>13</td>
-      <td>112</td>
+      <td>55</td>
     </tr>
     <tr>
       <td>nov</td>
-      <td>69</td>
+      <td>58</td>
+      <td>23</td>
       <td>19</td>
-      <td>12</td>
-      <td>119</td>
+      <td>58</td>
     </tr>
     <tr>
       <td>dic</td>
-      <td>69</td>
+      <td>58</td>
+      <td>23</td>
       <td>19</td>
-      <td>12</td>
-      <td>105</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <td>ene</td>
+      <td>58</td>
+      <td>23</td>
+      <td>19</td>
+      <td>55</td>
+    </tr>
+    <tr>
+      <td>feb</td>
+      <td>55</td>
+      <td>24</td>
+      <td>21</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <td>mar</td>
+      <td>58</td>
+      <td>23</td>
+      <td>19</td>
+      <td>60</td>
     </tr>
   </tbody>
 </table></div>
@@ -1125,6 +972,7 @@
 
     </div>
     
+    </div>
 
   </section>
   
@@ -1135,6 +983,7 @@
       <span class="section-count">2 metricas</span>
     </div>
 
+    <div class="cards-grid">
     
     
     <div class="query-card">
@@ -1174,6 +1023,7 @@
 
     </div>
     
+    </div>
 
   </section>
   
@@ -1182,7 +1032,7 @@
 
 <footer>
   Periodo: 2026-03-01 &rarr; 2026-03-31 &nbsp;&middot;&nbsp;
-  Generado el 2026-03-04 &nbsp;&middot;&nbsp;
+  Generado el 2026-03-05 &nbsp;&middot;&nbsp;
   <a href="../../index.html">Ver todos los reportes</a>
 </footer>
 
@@ -1367,6 +1217,47 @@ function renderBarMonthly(ctx, data) {
   });
 }
 
+function renderLine(ctx, data) {
+  const cols     = Object.keys(data[0]);
+  const labelCol = cols[0];
+  const valCols  = numericCols(data[0]).filter(c => !c.toLowerCase().includes('respuestas'));
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: data.map(r => r[labelCol]),
+      datasets: valCols.map((col, i) => ({
+        label: col,
+        data: data.map(r => r[col] ?? null),
+        borderColor:          cesColor(col, i),
+        backgroundColor:      'transparent',
+        pointBackgroundColor: cesColor(col, i),
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        tension: 0.35,
+        borderWidth: 2.5,
+      }))
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: CHART_DEFAULTS.plugins.legend,
+        datalabels: {
+          align: 'top', anchor: 'center',
+          color: ctx => cesColor(valCols[ctx.datasetIndex], ctx.datasetIndex),
+          font: { size: 10, weight: '700' },
+          formatter: v => v != null ? v + '%' : '',
+          display: (ctx) => ctx.datasetIndex === 0   // solo Facil %
+        }
+      },
+      scales: {
+        x: CHART_DEFAULTS.scales.x,
+        y: { ...CHART_DEFAULTS.scales.y, min: 0, max: 100, ticks: { callback: v => v + '%', color: '#666' } }
+      }
+    }
+  });
+}
+
 // ── Init all charts ───────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const charts = window.__CHARTS || {};
@@ -1374,10 +1265,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const ctx = document.getElementById(id);
     if (!ctx || !cfg.data || !cfg.data.length) return;
     try {
-      if      (cfg.type === 'bar_grouped')  renderBarGrouped(ctx, cfg.data);
-      else if (cfg.type === 'doughnut')     renderDoughnut(ctx, cfg.data);
+      if      (cfg.type === 'bar_grouped')    renderBarGrouped(ctx, cfg.data);
+      else if (cfg.type === 'doughnut')       renderDoughnut(ctx, cfg.data);
       else if (cfg.type === 'bar_horizontal') renderBarHorizontal(ctx, cfg.data);
-      else if (cfg.type === 'bar_monthly')  renderBarMonthly(ctx, cfg.data);
+      else if (cfg.type === 'bar_monthly')    renderBarMonthly(ctx, cfg.data);
+      else if (cfg.type === 'line')           renderLine(ctx, cfg.data);
     } catch(e) { console.error('Chart error for', id, e); }
   });
 });

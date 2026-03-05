@@ -202,6 +202,7 @@ def run_all_queries(bq_client, queries, params, config, dry_run=False):
                             "table_html":  df_to_html(sub_df),
                             "chart_type":  chart_type,
                             "df_json":     _df_to_json(sub_df, chart_type),
+                            "half":        sub.get("half", False),
                             "status":      status,
                             "error":       None,
                         })
@@ -249,6 +250,7 @@ def run_all_queries(bq_client, queries, params, config, dry_run=False):
                 "table_html": table_html,
                 "chart_type": chart_type,
                 "df_json": df_json,
+                "half": False,
                 "status": status,
                 "error": error,
             }

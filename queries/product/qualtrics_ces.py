@@ -1,7 +1,9 @@
 """
-CES - Tendencia mensual por encuesta (ultimos 12 meses)
+CES - Tendencia mensual por encuesta (ultimos 6 meses)
 
-Devuelve una card por survey con la evolucion mensual de Facil/Neutro/Dificil.
+Devuelve 4 cards (half-width, 2x2 grid):
+  Fila 1: Simulador Costos LITE | Simulador Costos
+  Fila 2: Pricing               | Costos
 """
 import sys
 from datetime import date
@@ -11,11 +13,12 @@ import pandas as pd
 
 TITLE = "CES - Tendencia mensual"
 SECTION = "product"
-DESCRIPTION = "Evolucion mensual del CES por seccion (ultimos 12 meses)"
+DESCRIPTION = "Evolucion mensual del CES por seccion (ultimos 6 meses)"
 ORDER = 1
-CHART_TYPE = "bar_grouped"
+CHART_TYPE = "line"
 
-SURVEY_ORDER = ["simulador_costos_lite", "simulador_costos", "costos", "pricing"]
+# Orden de display: SimLite, Sim, Pricing, Costos
+SURVEY_ORDER = ["simulador_costos_lite", "simulador_costos", "pricing", "costos"]
 SHORT_NAMES = {
     "simulador_costos_lite": "Simulador Costos LITE",
     "simulador_costos":      "Simulador Costos",
@@ -28,33 +31,19 @@ MONTH_NAMES = {
     "09": "sep", "10": "oct", "11": "nov", "12": "dic",
 }
 
-# DRY_RUN: una lista de dataframes, uno por encuesta
-_BASE = [55, 52, 55, 53, 54, 55, 53, 57, 55, 53, 55, 55]
-_MESES = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"]
-_DRY_SURVEYS = {
-    "simulador_costos_lite": {"f": [65,62,65,63,64,65,63,67,65,63,65,65],
-                               "n": [20,20,19,21,19,19,19,18,18,20,19,19],
-                               "d": [15,18,16,16,17,16,18,15,17,17,16,16],
-                               "r": [80,75,85,70,78,82,68,90,76,82,84,73]},
-    "simulador_costos":       {"f": [70,68,72,69,71,70,68,73,71,69,70,72],
-                               "n": [19,20,18,21,19,19,20,17,18,20,19,18],
-                               "d": [11,12,10,10,10,11,12, 10,11,11,11,10],
-                               "r": [65,60,72,58,65,69,55,78,63,68,70,61]},
-    "costos":                 {"f": [58,55,58,56,57,58,56,60,58,56,58,58],
-                               "n": [23,24,23,25,23,23,23,22,22,24,23,23],
-                               "d": [19,21,19,19,20,19,21,18,20,20,19,19],
-                               "r": [55,50,60,48,52,57,46,65,52,55,58,50]},
-    "pricing":                {"f": [69,66,69,67,68,69,67,71,69,67,69,69],
-                               "n": [19,20,19,21,19,19,20,18,18,20,19,19],
-                               "d": [12,14,12,12,13,12,13,11,13,13,12,12],
-                               "r": [112,105,118,100,108,115,96,124,108,112,119,105]},
+_MESES_6 = ["oct", "nov", "dic", "ene", "feb", "mar"]
+_DRY = {
+    "simulador_costos_lite": {"f": [63,65,65,65,62,65], "n": [20,19,19,20,20,19], "d": [17,16,16,15,18,16], "r": [82,84,73,80,75,85]},
+    "simulador_costos":      {"f": [69,70,72,70,68,72], "n": [20,19,18,19,20,18], "d": [11,11,10,11,12,10], "r": [68,70,61,65,60,72]},
+    "pricing":               {"f": [67,69,69,69,66,69], "n": [20,19,19,19,20,19], "d": [13,12,12,12,14,12], "r": [112,119,105,112,105,118]},
+    "costos":                {"f": [56,58,58,58,55,58], "n": [24,23,23,23,24,23], "d": [20,19,19,19,21,19], "r": [55,58,50,55,50,60]},
 }
 
 
-def _make_dry_run_df(key):
-    v = _DRY_SURVEYS[key]
+def _make_dry_df(key):
+    v = _DRY[key]
     return pd.DataFrame({
-        "Mes":        _MESES,
+        "Mes":        _MESES_6,
         "Facil %":    v["f"],
         "Neutro %":   v["n"],
         "Dificil %":  v["d"],
@@ -63,8 +52,9 @@ def _make_dry_run_df(key):
 
 
 def _trend_start(end_date_str: str) -> str:
+    """Primer dia de hace 5 meses (ventana de 6 meses)."""
     end = date.fromisoformat(end_date_str)
-    m = end.month - 11
+    m = end.month - 5
     y = end.year
     if m <= 0:
         m += 12
@@ -73,7 +63,6 @@ def _trend_start(end_date_str: str) -> str:
 
 
 def _build_monthly_df(df_raw: pd.DataFrame, ces_col: str) -> pd.DataFrame:
-    """Clasifica CES y agrega por mes."""
     sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
     from sources.sheets_reader import classify_ces
 
@@ -106,13 +95,14 @@ def _build_monthly_df(df_raw: pd.DataFrame, ces_col: str) -> pd.DataFrame:
 
 
 def run(params: dict, config: dict, dry_run: bool = False) -> list:
-    """Devuelve lista de {title, description, df} — una card por encuesta."""
+    """Devuelve 4 cards half-width — Fila 1: SimLite+Sim, Fila 2: Pricing+Costos."""
     if dry_run:
         return [
             {
-                "title": f"CES - {SHORT_NAMES[k]}",
+                "title":       f"CES - {SHORT_NAMES[k]}",
                 "description": f"Tendencia mensual de facilidad de uso - {SHORT_NAMES[k]}",
-                "df": _make_dry_run_df(k),
+                "df":          _make_dry_df(k),
+                "half":        True,
             }
             for k in SURVEY_ORDER
         ]
@@ -126,34 +116,30 @@ def run(params: dict, config: dict, dry_run: bool = False) -> list:
 
     results = []
     for key in SURVEY_ORDER:
-        sv = surveys_cfg.get(key, {})
-        tab = sv.get("sheets_tab")
+        sv      = surveys_cfg.get(key, {})
+        tab     = sv.get("sheets_tab")
         ces_col = sv.get("ces_column", "Q1")
-        short = SHORT_NAMES[key]
+        short   = SHORT_NAMES[key]
 
         if not tab:
-            results.append({
-                "title": f"CES - {short}",
-                "description": f"sheets_tab no configurado para {short}",
-                "df": pd.DataFrame({"Aviso": ["sheets_tab no configurado"]}),
-            })
-            continue
-
-        try:
-            df_raw = reader.get_survey_data(tab, start_trend, params["end_date"])
-            if df_raw.empty or ces_col not in df_raw.columns:
-                df_out = pd.DataFrame({"Aviso": ["Sin respuestas en el periodo"]})
-            else:
-                df_out = _build_monthly_df(df_raw, ces_col)
-                if df_out.empty:
-                    df_out = pd.DataFrame({"Aviso": ["Sin respuestas validas"]})
-        except Exception as e:
-            df_out = pd.DataFrame({"Error": [str(e)]})
+            df_out = pd.DataFrame({"Aviso": ["sheets_tab no configurado"]})
+        else:
+            try:
+                df_raw = reader.get_survey_data(tab, start_trend, params["end_date"])
+                if df_raw.empty or ces_col not in df_raw.columns:
+                    df_out = pd.DataFrame({"Aviso": ["Sin respuestas en el periodo"]})
+                else:
+                    df_out = _build_monthly_df(df_raw, ces_col)
+                    if df_out.empty:
+                        df_out = pd.DataFrame({"Aviso": ["Sin respuestas validas"]})
+            except Exception as e:
+                df_out = pd.DataFrame({"Error": [str(e)]})
 
         results.append({
             "title":       f"CES - {short}",
             "description": f"Tendencia mensual de facilidad de uso - {short}",
             "df":          df_out,
+            "half":        True,
         })
 
     return results

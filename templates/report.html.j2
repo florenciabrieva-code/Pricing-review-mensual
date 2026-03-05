@@ -85,6 +85,18 @@
     /* ── Layout ─────────────────────────────────────────────── */
     .container { max-width: 1280px; margin: 36px auto; padding: 0 28px; }
 
+    /* ── Cards grid ──────────────────────────────────────────── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .cards-grid .query-card        { grid-column: span 2; margin-bottom: 0; }
+    .cards-grid .query-card--half  { grid-column: span 1; }
+    @media (max-width: 900px) {
+      .cards-grid .query-card--half { grid-column: span 2; }
+    }
+
     /* ── Section ────────────────────────────────────────────── */
     .section { margin-bottom: 56px; }
     .section-header {
@@ -272,9 +284,10 @@
       <span class="section-count">{{ items | length }} metricas</span>
     </div>
 
+    <div class="cards-grid">
     {% for item in items %}
     {% set card_id = section_key ~ '_' ~ loop.index %}
-    <div class="query-card">
+    <div class="query-card{% if item.half %} query-card--half{% endif %}">
       <div class="query-card-header">
         <div class="query-title">
           {{ item.title }}
@@ -311,6 +324,7 @@
 
     </div>
     {% endfor %}
+    </div>{# /cards-grid #}
 
   </section>
   {% endfor %}
@@ -504,6 +518,47 @@ function renderBarMonthly(ctx, data) {
   });
 }
 
+function renderLine(ctx, data) {
+  const cols     = Object.keys(data[0]);
+  const labelCol = cols[0];
+  const valCols  = numericCols(data[0]).filter(c => !c.toLowerCase().includes('respuestas'));
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: data.map(r => r[labelCol]),
+      datasets: valCols.map((col, i) => ({
+        label: col,
+        data: data.map(r => r[col] ?? null),
+        borderColor:          cesColor(col, i),
+        backgroundColor:      'transparent',
+        pointBackgroundColor: cesColor(col, i),
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        tension: 0.35,
+        borderWidth: 2.5,
+      }))
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: CHART_DEFAULTS.plugins.legend,
+        datalabels: {
+          align: 'top', anchor: 'center',
+          color: ctx => cesColor(valCols[ctx.datasetIndex], ctx.datasetIndex),
+          font: { size: 10, weight: '700' },
+          formatter: v => v != null ? v + '%' : '',
+          display: (ctx) => ctx.datasetIndex === 0   // solo Facil %
+        }
+      },
+      scales: {
+        x: CHART_DEFAULTS.scales.x,
+        y: { ...CHART_DEFAULTS.scales.y, min: 0, max: 100, ticks: { callback: v => v + '%', color: '#666' } }
+      }
+    }
+  });
+}
+
 // ── Init all charts ───────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const charts = window.__CHARTS || {};
@@ -511,10 +566,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const ctx = document.getElementById(id);
     if (!ctx || !cfg.data || !cfg.data.length) return;
     try {
-      if      (cfg.type === 'bar_grouped')  renderBarGrouped(ctx, cfg.data);
-      else if (cfg.type === 'doughnut')     renderDoughnut(ctx, cfg.data);
+      if      (cfg.type === 'bar_grouped')    renderBarGrouped(ctx, cfg.data);
+      else if (cfg.type === 'doughnut')       renderDoughnut(ctx, cfg.data);
       else if (cfg.type === 'bar_horizontal') renderBarHorizontal(ctx, cfg.data);
-      else if (cfg.type === 'bar_monthly')  renderBarMonthly(ctx, cfg.data);
+      else if (cfg.type === 'bar_monthly')    renderBarMonthly(ctx, cfg.data);
+      else if (cfg.type === 'line')           renderLine(ctx, cfg.data);
     } catch(e) { console.error('Chart error for', id, e); }
   });
 });
