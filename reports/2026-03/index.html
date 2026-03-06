@@ -84,7 +84,7 @@
     /* ── Section ────────────────────────────────────────────── */
     .section { margin-bottom: 48px; }
     .section-header {
-      display: flex; align-items: center; gap: 10px;
+      display: flex; flex-direction: column; gap: 2px;
       margin-bottom: 16px;
       padding-bottom: 12px;
       border-bottom: 1px solid #e5e7eb;
@@ -98,6 +98,7 @@
       padding: 3px 10px;
     }
     .section-title { font-size: 1.05rem; font-weight: 700; color: #111827; }
+    .section-subtitle { font-size: 0.82rem; font-weight: 400; color: #6b7280; margin-top: 2px; display: block; }
     .section-count {
       font-size: 0.72rem; color: #9ca3af;
       background: #f3f4f6;
@@ -227,9 +228,8 @@
   
   <section class="section" id="business">
     <div class="section-header">
-      <span class="section-pill">BUSINESS</span>
       <span class="section-title">Negocio</span>
-      <span class="section-count">2 metricas</span>
+      
     </div>
 
     <div class="cards-grid">
@@ -241,8 +241,6 @@
           Revenue MoM
           
         </div>
-        <div class="query-description">Comparativo de revenue entre el mes actual y el anterior</div>
-        <div class="query-file">queries\business\revenue_mom.sql</div>
       </div>
 
       
@@ -259,8 +257,6 @@
           Top 10 Categorías por Volumen
           
         </div>
-        <div class="query-description">Categorías con mayor volumen de transacciones en el mes</div>
-        <div class="query-file">queries\business\top_categorias.sql</div>
       </div>
 
       
@@ -276,9 +272,10 @@
   
   <section class="section" id="product">
     <div class="section-header">
-      <span class="section-pill">PRODUCT</span>
       <span class="section-title">Producto</span>
-      <span class="section-count">10 metricas</span>
+      
+      <span class="section-subtitle">VOC - entendimiento de las experiencias de pricing</span>
+      
     </div>
 
     <div class="cards-grid">
@@ -287,11 +284,9 @@
     <div class="query-card query-card--half">
       <div class="query-card-header">
         <div class="query-title">
-          CES - Simulador Costos LITE
+          Simulador Costos LITE
           
         </div>
-        <div class="query-description">Tendencia mensual de facilidad de uso - Simulador Costos LITE</div>
-        <div class="query-file">queries\product\qualtrics_ces.py</div>
       </div>
 
       
@@ -377,11 +372,9 @@
     <div class="query-card query-card--half">
       <div class="query-card-header">
         <div class="query-title">
-          CES - Simulador Costos
+          Simulador Costos
           
         </div>
-        <div class="query-description">Tendencia mensual de facilidad de uso - Simulador Costos</div>
-        <div class="query-file">queries\product\qualtrics_ces.py</div>
       </div>
 
       
@@ -467,11 +460,9 @@
     <div class="query-card query-card--half">
       <div class="query-card-header">
         <div class="query-title">
-          CES - Pricing
+          Pricing
           
         </div>
-        <div class="query-description">Tendencia mensual de facilidad de uso - Pricing</div>
-        <div class="query-file">queries\product\qualtrics_ces.py</div>
       </div>
 
       
@@ -557,11 +548,9 @@
     <div class="query-card query-card--half">
       <div class="query-card-header">
         <div class="query-title">
-          CES - Costos
+          Costos
           
         </div>
-        <div class="query-description">Tendencia mensual de facilidad de uso - Costos</div>
-        <div class="query-file">queries\product\qualtrics_ces.py</div>
       </div>
 
       
@@ -650,8 +639,6 @@
           Tiempo de respuesta - Encuestas UX
           
         </div>
-        <div class="query-description">Tiempo promedio y mediana para completar cada encuesta en el mes</div>
-        <div class="query-file">queries\product\qualtrics_tiempo_respuesta.py</div>
       </div>
 
       
@@ -731,8 +718,6 @@
           Principales dudas por seccion
           
         </div>
-        <div class="query-description">Categorias de dudas identificadas en las encuestas, ordenadas por representatividad</div>
-        <div class="query-file">queries\product\qualtrics_dudas.py</div>
       </div>
 
       
@@ -808,8 +793,6 @@
           Awareness - Conocimiento previo de Pricing
           
         </div>
-        <div class="query-description">Porcentaje de usuarios que conocian la seccion de Pricing antes de ingresar</div>
-        <div class="query-file">queries\product\qualtrics_awareness_pricing.py</div>
       </div>
 
       
@@ -869,8 +852,6 @@
           Comunicaciones - Funnel por Campana
           
         </div>
-        <div class="query-description">Funnel enviado/entregado/abierto y conversion a Costos/Pricing el mismo dia que apertura</div>
-        <div class="query-file">queries\product\comunicaciones_funnel.sql</div>
       </div>
 
       
@@ -887,8 +868,6 @@
           Comunicaciones - Tendencia 6 Meses
           
         </div>
-        <div class="query-description">Evolucion mensual de enviados, abiertos y tasa de apertura por pais y canal (ultimos 6 meses)</div>
-        <div class="query-file">queries\product\comunicaciones_tendencia.sql</div>
       </div>
 
       
@@ -905,8 +884,6 @@
           Comportamiento en las Secciones
           
         </div>
-        <div class="query-description">Comportamiento de usuarios en las secciones del producto (completar con tablas reales)</div>
-        <div class="query-file">queries\product\comportamiento_secciones.sql</div>
       </div>
 
       
@@ -922,9 +899,8 @@
   
   <section class="section" id="cx">
     <div class="section-header">
-      <span class="section-pill">CX</span>
       <span class="section-title">CX</span>
-      <span class="section-count">2 metricas</span>
+      
     </div>
 
     <div class="cards-grid">
@@ -936,8 +912,6 @@
           Tickets por Motivo
           
         </div>
-        <div class="query-description">Distribución de tickets de soporte por motivo en el mes</div>
-        <div class="query-file">queries\cx\tickets_por_motivo.sql</div>
       </div>
 
       
@@ -954,8 +928,6 @@
           NPS Mensual
           
         </div>
-        <div class="query-description">Net Promoter Score del mes actual vs anterior</div>
-        <div class="query-file">queries\cx\nps_mensual.sql</div>
       </div>
 
       
@@ -974,7 +946,7 @@
 
 <footer>
   Periodo: 2026-03-01 &rarr; 2026-03-31 &nbsp;&middot;&nbsp;
-  Generado el 2026-03-05 &nbsp;&middot;&nbsp;
+  Generado el 2026-03-06 &nbsp;&middot;&nbsp;
   <a href="../../index.html">Ver todos los reportes</a>
 </footer>
 
@@ -989,17 +961,17 @@ const PAL = ['#009EE3','#FFE600','#ef4444','#10b981','#f97316','#8b5cf6'];
 const CHART_DEFAULTS = {
   plugins: {
     legend: {
-      labels: { color: '#6b7280', boxWidth: 12, padding: 16, font: { size: 12 } }
+      labels: { color: '#374151', boxWidth: 12, padding: 16, font: { size: 13, weight: '500' } }
     }
   },
   scales: {
     x: {
-      ticks:  { color: '#9ca3af', font: { size: 11 } },
+      ticks:  { color: '#6b7280', font: { size: 12 } },
       grid:   { color: 'rgba(0,0,0,0.04)' },
       border: { color: '#e5e7eb' }
     },
     y: {
-      ticks:  { color: '#9ca3af', font: { size: 11 } },
+      ticks:  { color: '#6b7280', font: { size: 12 } },
       grid:   { color: 'rgba(0,0,0,0.04)' },
       border: { color: '#e5e7eb' }
     }
@@ -1042,18 +1014,18 @@ function renderLine(ctx, data) {
         pointHoverRadius:     7,
         tension:              0.35,
         borderWidth:          2.5,
-        fill:                 i === 0,
+        fill:                 false,
       }))
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: CHART_DEFAULTS.plugins.legend,
+        legend: { ...CHART_DEFAULTS.plugins.legend, position: 'bottom' },
         datalabels: {
           align: 'top', anchor: 'end',
           color: (ctx) => cesColor(valCols[ctx.datasetIndex], ctx.datasetIndex),
-          font:  { size: 11, weight: '700' },
+          font:  { size: 12, weight: '700' },
           formatter: v => v != null ? v + '%' : '',
           display: (ctx) => ctx.datasetIndex === 0
         }
@@ -1061,7 +1033,7 @@ function renderLine(ctx, data) {
       scales: {
         x: CHART_DEFAULTS.scales.x,
         y: { ...CHART_DEFAULTS.scales.y, min: 0, max: 100,
-             ticks: { callback: v => v + '%', color: '#9ca3af', font: { size: 11 } } }
+             ticks: { callback: v => v + '%', color: '#9ca3af', font: { size: 12 } } }
       }
     }
   });

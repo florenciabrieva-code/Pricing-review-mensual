@@ -30,6 +30,9 @@ SECTION_LABELS = {
     "product": "Producto",
     "cx": "CX",
 }
+SECTION_SUBTITLES = {
+    "product": "VOC - entendimiento de las experiencias de pricing",
+}
 
 
 def get_month_range(year: int, month: int) -> tuple[str, str]:
@@ -275,6 +278,7 @@ def render_report(sections, params, output_path: Path):
     html = template.render(
         sections=sections,
         section_labels=SECTION_LABELS,
+        section_subtitles=SECTION_SUBTITLES,
         params=params,
         month_name=month_names_es[int(params["month"])],
         generated_at=date.today().isoformat(),

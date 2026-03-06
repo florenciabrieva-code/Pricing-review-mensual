@@ -84,7 +84,7 @@
     /* ── Section ────────────────────────────────────────────── */
     .section { margin-bottom: 48px; }
     .section-header {
-      display: flex; align-items: center; gap: 10px;
+      display: flex; flex-direction: column; gap: 2px;
       margin-bottom: 16px;
       padding-bottom: 12px;
       border-bottom: 1px solid #e5e7eb;
@@ -98,6 +98,7 @@
       padding: 3px 10px;
     }
     .section-title { font-size: 1.05rem; font-weight: 700; color: #111827; }
+    .section-subtitle { font-size: 0.82rem; font-weight: 400; color: #6b7280; margin-top: 2px; display: block; }
     .section-count {
       font-size: 0.72rem; color: #9ca3af;
       background: #f3f4f6;
@@ -223,9 +224,10 @@
   {% for section_key, items in sections.items() %}
   <section class="section" id="{{ section_key }}">
     <div class="section-header">
-      <span class="section-pill">{{ section_key | upper }}</span>
       <span class="section-title">{{ section_labels.get(section_key, section_key | title) }}</span>
-      <span class="section-count">{{ items | length }} metricas</span>
+      {% if section_subtitles.get(section_key) %}
+      <span class="section-subtitle">{{ section_subtitles[section_key] }}</span>
+      {% endif %}
     </div>
 
     <div class="cards-grid">
@@ -237,8 +239,6 @@
           {{ item.title }}
           {% if item.status == 'error' %}<span class="badge badge-error">Error</span>{% endif %}
         </div>
-        {% if item.description %}<div class="query-description">{{ item.description }}</div>{% endif %}
-        <div class="query-file">{{ item.file }}</div>
       </div>
 
       {# ── Chart ─────────────────────────────────────────────── #}
@@ -292,17 +292,17 @@ const PAL = ['#009EE3','#FFE600','#ef4444','#10b981','#f97316','#8b5cf6'];
 const CHART_DEFAULTS = {
   plugins: {
     legend: {
-      labels: { color: '#6b7280', boxWidth: 12, padding: 16, font: { size: 12 } }
+      labels: { color: '#374151', boxWidth: 12, padding: 16, font: { size: 13, weight: '500' } }
     }
   },
   scales: {
     x: {
-      ticks:  { color: '#9ca3af', font: { size: 11 } },
+      ticks:  { color: '#6b7280', font: { size: 12 } },
       grid:   { color: 'rgba(0,0,0,0.04)' },
       border: { color: '#e5e7eb' }
     },
     y: {
-      ticks:  { color: '#9ca3af', font: { size: 11 } },
+      ticks:  { color: '#6b7280', font: { size: 12 } },
       grid:   { color: 'rgba(0,0,0,0.04)' },
       border: { color: '#e5e7eb' }
     }
@@ -345,18 +345,18 @@ function renderLine(ctx, data) {
         pointHoverRadius:     7,
         tension:              0.35,
         borderWidth:          2.5,
-        fill:                 i === 0,
+        fill:                 false,
       }))
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: CHART_DEFAULTS.plugins.legend,
+        legend: { ...CHART_DEFAULTS.plugins.legend, position: 'bottom' },
         datalabels: {
           align: 'top', anchor: 'end',
           color: (ctx) => cesColor(valCols[ctx.datasetIndex], ctx.datasetIndex),
-          font:  { size: 11, weight: '700' },
+          font:  { size: 12, weight: '700' },
           formatter: v => v != null ? v + '%' : '',
           display: (ctx) => ctx.datasetIndex === 0
         }
@@ -364,7 +364,7 @@ function renderLine(ctx, data) {
       scales: {
         x: CHART_DEFAULTS.scales.x,
         y: { ...CHART_DEFAULTS.scales.y, min: 0, max: 100,
-             ticks: { callback: v => v + '%', color: '#9ca3af', font: { size: 11 } } }
+             ticks: { callback: v => v + '%', color: '#9ca3af', font: { size: 12 } } }
       }
     }
   });

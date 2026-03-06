@@ -99,8 +99,8 @@ def run(params: dict, config: dict, dry_run: bool = False) -> list:
     if dry_run:
         return [
             {
-                "title":       f"CES - {SHORT_NAMES[k]}",
-                "description": f"Tendencia mensual de facilidad de uso - {SHORT_NAMES[k]}",
+                "title":       SHORT_NAMES[k],
+                "description": "",
                 "df":          _make_dry_df(k),
                 "half":        True,
             }
@@ -136,8 +136,8 @@ def run(params: dict, config: dict, dry_run: bool = False) -> list:
                 df_out = pd.DataFrame({"Error": [str(e)]})
 
         results.append({
-            "title":       f"CES - {short}",
-            "description": f"Tendencia mensual de facilidad de uso - {short}",
+            "title":       short,
+            "description": "",
             "df":          df_out,
             "half":        True,
         })
